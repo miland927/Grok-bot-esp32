@@ -447,7 +447,7 @@ void Application::CheckNewVersion() {
     auto& board = Board::GetInstance();
     while (true) {
         auto display = board.GetDisplay();
-        display->SetStatus(Lang::Strings::CHECKING_NEW_VERSION);
+        /* Desk pet: the version check runs in the background, no status text over the face. */
 
         auto check = ota_->CheckVersion();
         if (!check) {
