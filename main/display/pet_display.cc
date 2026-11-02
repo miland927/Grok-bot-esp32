@@ -473,7 +473,18 @@ void PetDisplay::Tick() {
     }
     if (t_ > 1.5f && imu_ready_ && (now - last_imu_ > 60000)) {
         last_imu_ = now;
-        pet_imu_read(&tilt_x_, &tilt_y_, &imu_gyro_, &imu_dev_);
+        {
+            float raw_x = 0.0f, raw_y = 0.0f;
+            pet_imu_read(&raw_x, &raw_y, &imu_gyro_, &imu_dev_);
+            /* Follow gravity only while the device is steady. While it is being
+               rotated the accelerometer is noisy, and chasing it makes the eyes
+               swing. Holding the last tilt until motion stops reads as a head
+               that settles, not as a shake. */
+            if (imu_gyro_ < 120.0f) {
+                tilt_x_ += (raw_x - tilt_x_) * 0.18f;
+                tilt_y_ += (raw_y - tilt_y_) * 0.18f;
+            }
+        }
         if (imu_dev_ > 0.2f || imu_gyro_ > 60.0f) {
             last_touch_ = now;
             if (drowsy_) {
@@ -492,7 +503,11 @@ void PetDisplay::Tick() {
             hop_v_ -= 200.0f;
             ESP_LOGI(TAG, "imu surprise dev=%.2f", imu_dev_);
         }
-        if (imu_gyro_ > 180.0f) {
+        if (imu_gyro_ > 400.0f) {
+            if (now >= dizzy_until_) {
+                spin_v_ = 11.0f;
+                squash_v_ -= 1.5f;
+            }
             dizzy_until_ = now + 900000;
             ESP_LOGI(TAG, "imu dizzy gyro=%.0f", imu_gyro_);
         }
@@ -699,8 +714,8 @@ void PetDisplay::Tick() {
     float eye_target = 1.0f;
 
     /* 7: idle wander follows gravity a little */
-    tx += Clampf(tilt_x_ * 0.6f, -0.5f, 0.5f);
-    ty += Clampf(tilt_y_ * 0.6f, -0.5f, 0.5f);
+    tx += Clampf(tilt_x_ * 0.7f, -0.6f, 0.6f);
+    ty += Clampf(tilt_y_ * 0.7f, -0.6f, 0.6f);
 
     /* 3: explicit mood replaces the resting gaze */
     switch (mood_) {
@@ -790,9 +805,9 @@ void PetDisplay::Tick() {
 
     /* 2: dizzy is the highest priority */
     if (now < dizzy_until_) {
-        tx = sinf(t_ * 9.0f);
-        ty = cosf(t_ * 7.0f) * 0.7f;
-        eye_target = 0.55f;
+        tx = sinf(t_ * 8.0f) * 1.0f;
+        ty = cosf(t_ * 6.0f) * 0.9f;
+        eye_target = 0.50f;
     }
     Spring(&gx_, &gvx_, Clampf(tx, -1.0f, 1.0f), dt, 26.0f, 7.0f);
     Spring(&gy_, &gvy_, Clampf(ty, -1.0f, 1.0f), dt, 26.0f, 7.0f);
@@ -861,9 +876,9 @@ void PetDisplay::Render() {
     const float base_y = cy - 0.04f * ry + gy_ * 0.10f * ry;
     const float spin_c = cosf(spin_);
     const float spin_s = sinf(spin_);
-    const float ex0 = cx - eye_dx * spin_c + gx_ * 0.12f * rx;
+    const float ex0 = cx - eye_dx * spin_c + gx_ * 0.20f * rx;
     const float ey0 = base_y - eye_dx * spin_s;
-    const float ex1 = cx + eye_dx * spin_c + gx_ * 0.12f * rx;
+    const float ex1 = cx + eye_dx * spin_c + gx_ * 0.20f * rx;
     const float ey1 = base_y + eye_dx * spin_s;
 
     const float inv_rx = 1.0f / rx;
@@ -987,6 +1002,11 @@ void PetDisplay::Render() {
     dirty_x1_ = ux1;
     dirty_y1_ = uy1;
 }
+
+
+
+
+
 
 
 

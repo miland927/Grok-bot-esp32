@@ -10,7 +10,7 @@
                 "CONFIG_USE_DEVICE_AEC=y",
                 "CONFIG_APP_PROJECT_VER_FROM_CONFIG=y",
                 "CONFIG_APP_PROJECT_VER=\"1.0.1\"",
-                "CONFIG_OTA_URL=\"http://192.168.123.88:8000/ota.json\""
+                "CONFIG_OTA_URL=\"http://127.0.0.1:9/ota.json\""
             ]
         },
         {
