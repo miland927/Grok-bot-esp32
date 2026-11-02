@@ -440,7 +440,10 @@ void Application::CheckAssetsVersion() {
 }
 
 void Application::CheckNewVersion() {
-    const int MAX_RETRY = 10;
+    /* Desk pet: this runs before the protocol is created, so a long retry loop
+       keeps the device unable to talk at all ("Protocol not initialized").
+       Try once; if the update server is unreachable, continue booting. */
+    const int MAX_RETRY = 1;
     int retry_count = 0;
     int retry_delay = 10;  // Initial retry delay in seconds
 
