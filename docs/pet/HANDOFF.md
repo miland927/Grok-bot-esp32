@@ -16,7 +16,7 @@
 | 项 | 值 |
 |---|---|
 | 板子 | Waveshare ESP32-S3-Touch-AMOLED-2.06 |
-| 固件 | 本项目，版本 1.0.1 |
+| 固件 | 本项目 |
 | 启动槽 | `ota_1` @0x410000（OTA 升级后） |
 | 语音 | 已绑定小智云，唤醒词「你好小智」 |
 | 刷机口 | COM3（原生 USB） |
@@ -61,6 +61,8 @@ python -m esptool --chip esp32s3 -p COM3 write-flash 0x0 <备份>.bin
 - 服务器必须支持 **POST**（设备用 POST 请求清单）和 Range（下载分块）。
   参考实现：开发机 `local-only/ota/server.py`。
 - 设备只写备用槽，校验失败自动回退，不会砖。
+- **检查失败只写日志、不弹错误**：服务器不可达时屏幕上不会出现「错误」横幅，
+  只在串口留下 `OTA check failed: ...` 并按 10s→20s→40s… 退避重试。
 - 运行时改地址：对设备说「把升级地址改成 …」，模型会调用
   `self.system.set_ota_url`。
 

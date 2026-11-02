@@ -474,7 +474,9 @@ void Application::CheckNewVersion() {
                 alert_message_length >= static_cast<int>(sizeof(buffer))) {
                 snprintf(buffer, sizeof(buffer), "%s", err.Message());
             }
-            Alert(Lang::Strings::ERROR, buffer, "cloud_off", Lang::Sounds::OGG_EXCLAMATION);
+            /* Desk pet: an unreachable update server must not paint an error banner
+               across the face. Keep the failure in the log only. */
+            ESP_LOGW(TAG, "OTA check failed: %s", buffer);
 
             ESP_LOGW(TAG, "Check new version failed, retry in %d seconds (%d/%d)", retry_delay,
                      retry_count, MAX_RETRY);
