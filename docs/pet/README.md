@@ -8,6 +8,14 @@ ES8311+ES7210 音频、AXP2101 电源、QMI8658 IMU、PCF85063 RTC、32MB Flash 
 
 ---
 
+## 文档导航
+
+- [ROADMAP.md](ROADMAP.md) —— 每个任务的目标、做法、关键参数、验收与证据
+- [DECISIONS.md](DECISIONS.md) —— 技术选型与踩坑记录（为什么这样选，代价是什么）
+- [HANDOFF.md](HANDOFF.md) —— 仓库、当前设备状态、构建/刷机/恢复、已知限制
+
+---
+
 ## 现在能做什么
 
 | 刺激 | 反应 |
