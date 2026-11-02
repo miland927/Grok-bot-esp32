@@ -1,4 +1,4 @@
-#include "pet_display.h"
+﻿#include "pet_display.h"
 #include "lvgl_theme.h"
 #include "pet_imu.h"
 #include "pet_rtc.h"
@@ -147,6 +147,14 @@ void PetDisplay::SyncColors() {
 void PetDisplay::SetupUI() {
     SpiLcdDisplay::SetupUI();
 
+    /* the pet owns the screen: hide the status/top bars entirely */
+    if (top_bar_ != nullptr) {
+        lv_obj_add_flag(top_bar_, LV_OBJ_FLAG_HIDDEN);
+    }
+    if (status_bar_ != nullptr) {
+        lv_obj_add_flag(status_bar_, LV_OBJ_FLAG_HIDDEN);
+    }
+
     /* dark theme by default: white face on black */
     auto& theme_manager = LvglThemeManager::GetInstance();
     if (auto* dark = theme_manager.GetTheme("dark")) {
@@ -272,6 +280,16 @@ void PetDisplay::ShowNotification(const char* notification, int duration_ms) {
 void PetDisplay::ShowNotification(const std::string& notification, int duration_ms) {
     (void)duration_ms;
     ESP_LOGI(TAG, "notify: %s", notification.c_str());
+}
+
+void PetDisplay::SetChatMessage(const char* role, const char* content) {
+    /* "system" carries boot/status lines (initialising, please wait, ...).
+       Draw only real conversation text. */
+    if (role != nullptr && std::strcmp(role, "system") == 0) {
+        ESP_LOGI(TAG, "system: %s", content ? content : "");
+        return;
+    }
+    SpiLcdDisplay::SetChatMessage(role, content);
 }
 
 void PetDisplay::SetEmotion(const char* emotion) {
@@ -969,6 +987,8 @@ void PetDisplay::Render() {
     dirty_x1_ = ux1;
     dirty_y1_ = uy1;
 }
+
+
 
 
 
