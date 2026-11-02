@@ -1,0 +1,36 @@
+{
+    "manufacturer": "waveshare",
+    "type": "esp32-s3-touch-amoled-2.06",
+    "target": "esp32s3",
+    "builds": [
+        {
+            "name": "esp32-s3-touch-amoled-2.06",
+            "sdkconfig_append": [
+                "CONFIG_USE_WECHAT_MESSAGE_STYLE=n",
+                "CONFIG_USE_DEVICE_AEC=y",
+                "CONFIG_APP_PROJECT_VER_FROM_CONFIG=y",
+                "CONFIG_APP_PROJECT_VER=\"1.0.1\"",
+                "CONFIG_OTA_URL=\"http://192.168.123.88:8000/ota.json\""
+            ]
+        },
+        {
+            "name": "esp32-s3-touch-amoled-2.06-whale",
+            "sdkconfig_append": [
+                "CONFIG_USE_WECHAT_MESSAGE_STYLE=n",
+                "CONFIG_USE_DEVICE_AEC=y",
+                "CONFIG_WAVESHARE_WHALE_VALIDATION=y",
+                "CONFIG_ESPTOOLPY_FLASHSIZE_32MB=y",
+                "CONFIG_PARTITION_TABLE_CUSTOM=y",
+                "CONFIG_PARTITION_TABLE_CUSTOM_FILENAME=\"partitions/whale-32m.csv\"",
+                "CONFIG_FLASH_CUSTOM_ASSETS=y",
+                "CONFIG_CUSTOM_ASSETS_FILE=\"../whale/assets.bin\"",
+                "CONFIG_BOOTLOADER_LOG_LEVEL_INFO=y",
+                "CONFIG_BOOTLOADER_SKIP_VALIDATE_ALWAYS=n",
+                "CONFIG_BOOTLOADER_SKIP_VALIDATE_IN_DEEP_SLEEP=n",
+                "CONFIG_BOOTLOADER_SKIP_VALIDATE_ON_POWER_ON=n",
+                "CONFIG_IDF_EXPERIMENTAL_FEATURES=y",
+                "CONFIG_BOOTLOADER_CACHE_32BIT_ADDR_QUAD_FLASH=y"
+            ]
+        }
+    ]
+}

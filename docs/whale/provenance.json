@@ -1,0 +1,23 @@
+{
+  "upstream": {
+    "repository": "https://github.com/78/xiaozhi-esp32",
+    "commit": "49b4380b3faa0ceadd28a3e78aaf0f311c46c57e"
+  },
+  "animations": {
+    "repository": "https://github.com/yanzwzz/dsh-whale-girl-pet",
+    "commit": "b5ce53cfa87b9fc669eef2aabe64946bb77adb72",
+    "count": 50
+  },
+  "validated_application_sha256": "77cf0fe4c3848cf469c439067b686ad1f7d384552d2bbf25b84179400034c4a8",
+  "bundled_assets_sha256": "15419b27735148a0c09c91260078fa560b5291ae66e96afbaa26a0693783f958",
+  "esp_idf_commit": "fff9895c82d744c7237be8847347bdd1b07c6643",
+  "export_validation": {
+    "host_tests": 110,
+    "passed": 103,
+    "skipped": 7,
+    "resource_roundtrip": "byte-identical",
+    "board_source": "matches validated larger-character source",
+    "raw_assets": "50 Git blob and SHA256 matches",
+    "new_machine_hardware_build": "not performed"
+  }
+}

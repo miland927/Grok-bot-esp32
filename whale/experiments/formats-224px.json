@@ -1,0 +1,95 @@
+{
+  "note": "Representative file sizes only; no full-library fit, visual quality or device performance claim.",
+  "rows": [
+    {
+      "name": "待机呼吸休闲.webm",
+      "key": "neutral",
+      "format": "gif",
+      "bytes": 855534,
+      "size": [
+        224,
+        224
+      ],
+      "frames": 80,
+      "duration_ms": 10010,
+      "transparent_frames": 80,
+      "encode_seconds": 0.81,
+      "device_decoder": "Existing GIF path; new file not yet hardware tested"
+    },
+    {
+      "name": "待机呼吸休闲.webm",
+      "key": "neutral",
+      "format": "webp",
+      "bytes": 599362,
+      "size": [
+        224,
+        224
+      ],
+      "frames": 80,
+      "duration_ms": 10000,
+      "transparent_frames": 80,
+      "encode_seconds": 0.59,
+      "device_decoder": "Not implemented or hardware tested"
+    },
+    {
+      "name": "工作思考.webm",
+      "key": "thinking",
+      "format": "gif",
+      "bytes": 883565,
+      "size": [
+        224,
+        224
+      ],
+      "frames": 80,
+      "duration_ms": 10010,
+      "transparent_frames": 80,
+      "encode_seconds": 1.09,
+      "device_decoder": "Existing GIF path; new file not yet hardware tested"
+    },
+    {
+      "name": "工作思考.webm",
+      "key": "thinking",
+      "format": "webp",
+      "bytes": 1414364,
+      "size": [
+        224,
+        224
+      ],
+      "frames": 80,
+      "duration_ms": 10000,
+      "transparent_frames": 80,
+      "encode_seconds": 1.0,
+      "device_decoder": "Not implemented or hardware tested"
+    },
+    {
+      "name": "点击回应 - 开心跃动.webm",
+      "key": "happy",
+      "format": "gif",
+      "bytes": 846996,
+      "size": [
+        224,
+        224
+      ],
+      "frames": 80,
+      "duration_ms": 10010,
+      "transparent_frames": 80,
+      "encode_seconds": 0.78,
+      "device_decoder": "Existing GIF path; new file not yet hardware tested"
+    },
+    {
+      "name": "点击回应 - 开心跃动.webm",
+      "key": "happy",
+      "format": "webp",
+      "bytes": 656632,
+      "size": [
+        224,
+        224
+      ],
+      "frames": 80,
+      "duration_ms": 10000,
+      "transparent_frames": 80,
+      "encode_seconds": 0.56,
+      "device_decoder": "Not implemented or hardware tested"
+    }
+  ]
+}

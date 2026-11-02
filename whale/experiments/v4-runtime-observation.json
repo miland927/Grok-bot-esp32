@@ -1,0 +1,17 @@
+{
+  "observed_seconds": 600,
+  "bytes_received": 7779,
+  "touch_events_seen": 7,
+  "highest_touch_counter": 7,
+  "speaking_transitions_seen": 6,
+  "animations_seen": [
+    "happy",
+    "neutral",
+    "thinking"
+  ],
+  "reset_or_crash_markers": [],
+  "physical_screen_quality": "requires user observation",
+  "five_distinct_voice_rounds": "requires user confirmation",
+  "heap_sample_count": 55,
+  "user_feedback": "User accepted current image quality provisionally and asked to continue. No claim of full touch/voice acceptance."
+}

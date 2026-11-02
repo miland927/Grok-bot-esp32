@@ -1,0 +1,48 @@
+{
+  "status": "proposed_not_active",
+  "schema_version": 1,
+  "source_event": {
+    "type": "llm",
+    "emotion": "native protocol tag"
+  },
+  "mapping": {
+    "neutral": "w024",
+    "happy": "w031",
+    "laughing": "w031",
+    "funny": "w031",
+    "sad": "w035",
+    "angry": "w029",
+    "crying": "w035",
+    "loving": "w031",
+    "embarrassed": "w030",
+    "surprised": "w043",
+    "shocked": "w043",
+    "thinking": "w019",
+    "winking": "w030",
+    "cool": "w031",
+    "relaxed": "w024",
+    "delicious": "w031",
+    "kissy": "w030",
+    "confident": "w031",
+    "sleepy": "w006",
+    "silly": "w031",
+    "confused": "w001"
+  },
+  "unknown": "w024",
+  "approximate_tags": [
+    "winking",
+    "cool",
+    "relaxed",
+    "delicious",
+    "kissy",
+    "confident",
+    "silly",
+    "confused"
+  ],
+  "notes": [
+    "Proposed coarse animation mapping, not activation evidence.",
+    "Keep native emotion tags separate from listening/thinking/speaking state.",
+    "Do not infer emotions from audio tone or spoken keywords as a substitute for native tags.",
+    "Do not rebuild old 10-action firmware over current v7."
+  ]
+}

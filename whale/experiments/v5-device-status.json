@@ -1,0 +1,24 @@
+{
+  "app_write_verified": true,
+  "nvs_unchanged_before_reboot": true,
+  "selector_unchanged": true,
+  "assets_written": false,
+  "bootloader_written": false,
+  "partitions_written": false,
+  "menu_ready_seen": true,
+  "scaled_ui_seen": true,
+  "crash_markers": [],
+  "user_first_check": {
+    "action_menu": true,
+    "ten_actions": true,
+    "automatic_return": true,
+    "voice_interrupt": true,
+    "evidence": "User confirmed menu, ten actions, restoration and voice interruption normal",
+    "checked_at": "2026-10-22T12:59:20+09:00"
+  },
+  "pending": [
+    "Each action repeated at least 3 times",
+    "Emotion-tag coverage",
+    "Long-running stability and full system acceptance"
+  ]
+}

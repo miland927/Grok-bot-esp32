@@ -1,0 +1,14 @@
+{
+  "app_write_verified": true,
+  "assets_write_verified": true,
+  "nvs_unchanged_before_reboot": true,
+  "selector_unchanged": true,
+  "bootloader_unchanged": true,
+  "partitions_unchanged": true,
+  "scaled_ui_seen": true,
+  "app_version": "2.5.2",
+  "initial_boot_capture_seconds": 35,
+  "initial_boot_crash_markers": [],
+  "physical_quality_touch_voice_acceptance": "pending",
+  "runtime_observation": "in progress; no long-run acceptance claim"
+}

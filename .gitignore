@@ -1,0 +1,34 @@
+tmp/
+components/
+managed_components/
+build/
+dist/
+.vscode/
+.devcontainer/
+sdkconfig.old
+sdkconfig
+dependencies.lock
+.env
+releases/
+main/assets/lang_config.h
+main/mmap_generate_emoji.h
+.DS_Store
+.cache
+*.pyc
+*.bin
+mmap_generate_*.h
+.clangd
+
+# Runtime font/model/animation bundle required to build this variant.
+!whale/assets.bin
+# Machine-local environments and private device material.
+/.venv/
+/esp-idf/
+/local-only/
+/device-backups/
+**/serial-raw.log
+**/nvs-*.bin
+**/full-flash*.bin
+
+# Preserve the validated board dependency versions.
+!dependencies.lock

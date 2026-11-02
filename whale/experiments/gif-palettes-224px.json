@@ -1,0 +1,86 @@
+[
+  {
+    "key": "neutral",
+    "variant": "8fps-64colors-none",
+    "bytes": 852298,
+    "frames": 80,
+    "duration_ms": 10010
+  },
+  {
+    "key": "neutral",
+    "variant": "8fps-32colors-none",
+    "bytes": 652323,
+    "frames": 80,
+    "duration_ms": 10010
+  },
+  {
+    "key": "neutral",
+    "variant": "6fps-64colors-none",
+    "bytes": 643022,
+    "frames": 60,
+    "duration_ms": 10000
+  },
+  {
+    "key": "neutral",
+    "variant": "10fps-64colors-none",
+    "bytes": 1064530,
+    "frames": 100,
+    "duration_ms": 10000
+  },
+  {
+    "key": "thinking",
+    "variant": "8fps-64colors-none",
+    "bytes": 885455,
+    "frames": 80,
+    "duration_ms": 10010
+  },
+  {
+    "key": "thinking",
+    "variant": "8fps-32colors-none",
+    "bytes": 701158,
+    "frames": 80,
+    "duration_ms": 10010
+  },
+  {
+    "key": "thinking",
+    "variant": "6fps-64colors-none",
+    "bytes": 650748,
+    "frames": 60,
+    "duration_ms": 10000
+  },
+  {
+    "key": "thinking",
+    "variant": "10fps-64colors-none",
+    "bytes": 1088195,
+    "frames": 100,
+    "duration_ms": 10000
+  },
+  {
+    "key": "happy",
+    "variant": "8fps-64colors-none",
+    "bytes": 841502,
+    "frames": 80,
+    "duration_ms": 10010
+  },
+  {
+    "key": "happy",
+    "variant": "8fps-32colors-none",
+    "bytes": 654768,
+    "frames": 80,
+    "duration_ms": 10010
+  },
+  {
+    "key": "happy",
+    "variant": "6fps-64colors-none",
+    "bytes": 630304,
+    "frames": 60,
+    "duration_ms": 10000
+  },
+  {
+    "key": "happy",
+    "variant": "10fps-64colors-none",
+    "bytes": 1050822,
+    "frames": 100,
+    "duration_ms": 10000
+  }
+]

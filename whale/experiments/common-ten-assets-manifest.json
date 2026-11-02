@@ -1,0 +1,83 @@
+{
+  "status": "OFFLINE; quality and device acceptance pending; only three triggers active in first trial",
+  "pixels": 160,
+  "fps": 8,
+  "colors": 64,
+  "count": 10,
+  "bytes": 7669838,
+  "capacity": 10485760,
+  "free_percent": 26.85,
+  "sha256": "e11afaa6e30672eaa1aa90e9e0141a53bc2ff76797d92899eff0978087b0f147",
+  "entries": [
+    {
+      "id": "W001",
+      "source": "东张西望.webm",
+      "file": "w001.gif",
+      "bytes": 465620,
+      "sha256": "bf3e156363193a8e53adc66a57d7296d1117df42b2f20007733bf167965a8f8c"
+    },
+    {
+      "id": "W006",
+      "source": "原地小憩沉眠.webm",
+      "file": "w006.gif",
+      "bytes": 475566,
+      "sha256": "cae69a575742a02f5a08c3a621fd2ded159e149a03b2726814a542233b620ba7"
+    },
+    {
+      "id": "W019",
+      "source": "工作思考.webm",
+      "file": "w019.gif",
+      "bytes": 492876,
+      "sha256": "b48a6b30c495a10f3eb5aecae1ede32533a96f0e2e06b223ef0ed09b3d25fa88"
+    },
+    {
+      "id": "W024",
+      "source": "待机呼吸休闲.webm",
+      "file": "w024.gif",
+      "bytes": 472853,
+      "sha256": "4022f2bd15bdd9283465dfd802d0dfc9ee5c6899bf5e7f515d308d2a405b1a6c"
+    },
+    {
+      "id": "W027",
+      "source": "打瞌睡被惊醒.webm",
+      "file": "w027.gif",
+      "bytes": 461713,
+      "sha256": "2badb5c89b32da0d22d595e0a5bf4ca49b36ca413c0a592749358f0dc30518f4"
+    },
+    {
+      "id": "W029",
+      "source": "点击回应 - 傲娇生气（侧身展示）.webm",
+      "file": "w029.gif",
+      "bytes": 423599,
+      "sha256": "b677c452b4ea590cd5f9dc000598f3d9004909303035801be69182429a07f091"
+    },
+    {
+      "id": "W030",
+      "source": "点击回应 - 害羞惊讶.webm",
+      "file": "w030.gif",
+      "bytes": 468447,
+      "sha256": "d7ed58a56299b218b080647acfb1351ba638b35578a6813908700d2a2639bb3f"
+    },
+    {
+      "id": "W031",
+      "source": "点击回应 - 开心跃动.webm",
+      "file": "w031.gif",
+      "bytes": 461551,
+      "sha256": "29670eb446364f530cf392461f3ebf08113ac246eeff1eb27e5dfbe8cecc7d5a"
+    },
+    {
+      "id": "W035",
+      "source": "看表叹气.webm",
+      "file": "w035.gif",
+      "bytes": 485073,
+      "sha256": "dc111d2c94a675cc0ba155a0d6a796e38c9732f81e70cdc3ca5e3165bc805b12"
+    },
+    {
+      "id": "W043",
+      "source": "被吓一跳（炸毛）.webm",
+      "file": "w043.gif",
+      "bytes": 477042,
+      "sha256": "d2077f7a8559fc48ef0cde1efa216a7f79306021b5b2c05678e224546b474b08"
+    }
+  ]
+}

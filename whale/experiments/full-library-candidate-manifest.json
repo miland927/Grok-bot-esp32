@@ -1,0 +1,367 @@
+{
+  "status": "OFFLINE CAPACITY CANDIDATE; NOT INSTALLED; NOT VISUALLY ACCEPTED",
+  "source_commit": "b5ce53cfa87b9fc669eef2aabe64946bb77adb72",
+  "animation_count": 50,
+  "pixels": 96,
+  "fps": 6,
+  "colors": 32,
+  "bytes": 8952113,
+  "capacity": 10485760,
+  "remaining_bytes": 1533647,
+  "free_percent": 14.63,
+  "sha256": "cc9a0318500a958f13621e1023c8e724afba9b69a2e1823d0f1a41ba49bbb33d",
+  "validated": "50 source SHA256 hashes; GIF headers/dimensions; resource roundtrip; unchanged fonts/models/PNG",
+  "pending": "Display scale/geometry adjustment, complete visual review, device playback/voice/interaction tests",
+  "entries": [
+    {
+      "id": "W001",
+      "source": "东张西望.webm",
+      "file": "w001.gif",
+      "bytes": 117441,
+      "sha256": "d1557d8cdb173bd90233d04b70c9905357368f0a76369d4e832d34a696d25a67"
+    },
+    {
+      "id": "W002",
+      "source": "举牌不是大肥鱼.webm",
+      "file": "w002.gif",
+      "bytes": 118861,
+      "sha256": "e3206394a6bd24791087fb5c6d74bdb4bd23411a5196daabeac9b50bb3c8a263"
+    },
+    {
+      "id": "W003",
+      "source": "偷吃Token.webm",
+      "file": "w003.gif",
+      "bytes": 115437,
+      "sha256": "949f8825475a00773cf7e468764094fea0547e7753744aaa703de9b98bbc6ddb"
+    },
+    {
+      "id": "W004",
+      "source": "偷吃零食被抓住.webm",
+      "file": "w004.gif",
+      "bytes": 122287,
+      "sha256": "4f8368a0b134a91891775cd0e2b1764b3bcbd6b0a7909f9f570a23d95d92379d"
+    },
+    {
+      "id": "W005",
+      "source": "原地专心玩魔方.webm",
+      "file": "w005.gif",
+      "bytes": 121385,
+      "sha256": "02d6689921329ea02b8d272c105a072305548ccb9d06263206fbceb3e66c2d9f"
+    },
+    {
+      "id": "W006",
+      "source": "原地小憩沉眠.webm",
+      "file": "w006.gif",
+      "bytes": 120233,
+      "sha256": "88c241775db488304cdacfbcd1bc8e7d68bdc25e2806a5f3d87cb58f81b5476a"
+    },
+    {
+      "id": "W007",
+      "source": "原地敲击桌面互动.webm",
+      "file": "w007.gif",
+      "bytes": 115654,
+      "sha256": "27996394ea5c037a4a2c890d50c81b0d945207d919c564b91f56def79f3a2c3c"
+    },
+    {
+      "id": "W008",
+      "source": "原地漂浮踏步.webm",
+      "file": "w008.gif",
+      "bytes": 119903,
+      "sha256": "03a3e97316f48da5a76298a7471636f1a0d92b0e0ec3971f8f79335fb4ba93c8"
+    },
+    {
+      "id": "W009",
+      "source": "原地跳跃抓碎头顶物品.webm",
+      "file": "w009.gif",
+      "bytes": 110178,
+      "sha256": "370ccdc0d4adb559d8fb68f98a57983513e019aea980b76bc09f0517c5d565f5"
+    },
+    {
+      "id": "W010",
+      "source": "原地蹲下玩玩具汽车.webm",
+      "file": "w010.gif",
+      "bytes": 108324,
+      "sha256": "7ce7af4d6e678fcef4f481733e0caf4579303036fe9cb3dda8f9950e95ec2027"
+    },
+    {
+      "id": "W011",
+      "source": "原地重力下蹲压缩.webm",
+      "file": "w011.gif",
+      "bytes": 94157,
+      "sha256": "58843edfa2ae57fadae70e9a14c43edccb1d965f36c685a4f91c17c67f16ec12"
+    },
+    {
+      "id": "W012",
+      "source": "吃小鱼干.webm",
+      "file": "w012.gif",
+      "bytes": 122622,
+      "sha256": "f1c163d0e652b9e7ccbe6be62ebd4ead139d322656f9ef6763b1aa75ee569e30"
+    },
+    {
+      "id": "W013",
+      "source": "吃盒饭.webm",
+      "file": "w013.gif",
+      "bytes": 120729,
+      "sha256": "acf60f6525c843ff3dc5a4464a5ff48c475d345b7dde7422dd85b6a19d00a030"
+    },
+    {
+      "id": "W014",
+      "source": "哈欠连天.webm",
+      "file": "w014.gif",
+      "bytes": 119283,
+      "sha256": "453af8301f91714468029305df8dcec5b9d80e48059bcca1e70a4c8ea4fab048"
+    },
+    {
+      "id": "W015",
+      "source": "喝奶茶.webm",
+      "file": "w015.gif",
+      "bytes": 120996,
+      "sha256": "afd9bc220b3d485157db5d15f4b9c38e1021ad034134f88c47017299e5293dcf"
+    },
+    {
+      "id": "W016",
+      "source": "女仆屈膝礼仪.webm",
+      "file": "w016.gif",
+      "bytes": 115134,
+      "sha256": "14064e3e3d7521ae088060aa32b8c169fea426be9351e9bea60119bcb4096537"
+    },
+    {
+      "id": "W017",
+      "source": "女仆扫除.webm",
+      "file": "w017.gif",
+      "bytes": 122779,
+      "sha256": "e15e9603af0d749ca1a3ae4064748e56ccc42904f812ddcfc4ddd2e2d8b0bc54"
+    },
+    {
+      "id": "W018",
+      "source": "小幅度原地 360 度旋转展示.webm",
+      "file": "w018.gif",
+      "bytes": 102306,
+      "sha256": "8267c229c14a395f78e31eaa99f258d241216695ee39719ec457ddf3d7bd085b"
+    },
+    {
+      "id": "W019",
+      "source": "工作思考.webm",
+      "file": "w019.gif",
+      "bytes": 126086,
+      "sha256": "64b195522bee5dfdcb1946ef77450327ba54ac236041d7a5cf037207ad325578"
+    },
+    {
+      "id": "W020",
+      "source": "工作摸鱼.webm",
+      "file": "w020.gif",
+      "bytes": 123175,
+      "sha256": "ae6dcf8a86cb2d432a54c275e8817ca35c2086419959302b7be9c54698d83952"
+    },
+    {
+      "id": "W021",
+      "source": "工作结束.webm",
+      "file": "w021.gif",
+      "bytes": 113999,
+      "sha256": "ffd212ae8dd1fdb05c163cb8afd7fb7f1948d539c5aa081d6ade0826077c9317"
+    },
+    {
+      "id": "W022",
+      "source": "工作被打扰.webm",
+      "file": "w022.gif",
+      "bytes": 115561,
+      "sha256": "ad27cf6435ad5f8fafdcd87b70c2ee5a99ba353aab409bffbf0da4502ae55bcd"
+    },
+    {
+      "id": "W023",
+      "source": "开始工作.webm",
+      "file": "w023.gif",
+      "bytes": 128342,
+      "sha256": "a670d80153f616112edcbc8428dd0d3c5415771f6485f420581a605d3bf26a46"
+    },
+    {
+      "id": "W024",
+      "source": "待机呼吸休闲.webm",
+      "file": "w024.gif",
+      "bytes": 119431,
+      "sha256": "ac5080175dac6924320e272d8116316a97fa517de3cc20c83d19226974c9883c"
+    },
+    {
+      "id": "W025",
+      "source": "悠闲哼歌.webm",
+      "file": "w025.gif",
+      "bytes": 127793,
+      "sha256": "0f3948ed8a7c5b044554b78a69d4642e9ba275182da45a29e85ad643fb8cc389"
+    },
+    {
+      "id": "W026",
+      "source": "打喷嚏.webm",
+      "file": "w026.gif",
+      "bytes": 121478,
+      "sha256": "0dcb8d8d3ba99569ff98a83f29cdf4865f6e7b3f33d0fe33c0415724b7f8ed8b"
+    },
+    {
+      "id": "W027",
+      "source": "打瞌睡被惊醒.webm",
+      "file": "w027.gif",
+      "bytes": 117229,
+      "sha256": "125bd56bf762bdc62d6f4f07b75124a8a567bcdec53f11901557d77b6dff9553"
+    },
+    {
+      "id": "W028",
+      "source": "摸鱼被抓.webm",
+      "file": "w028.gif",
+      "bytes": 123669,
+      "sha256": "34c340c61d78712af97f6da646bfad9dee8765073c5400045e9c1cf2ae7ff830"
+    },
+    {
+      "id": "W029",
+      "source": "点击回应 - 傲娇生气（侧身展示）.webm",
+      "file": "w029.gif",
+      "bytes": 105299,
+      "sha256": "e62ad0fe02994c88b4b959c31450d6d37a478ef81115c40aef11c036dbf297a8"
+    },
+    {
+      "id": "W030",
+      "source": "点击回应 - 害羞惊讶.webm",
+      "file": "w030.gif",
+      "bytes": 118634,
+      "sha256": "b5029351dc6abae19a385a79967c928fa2112c394121f7c049c91d0241116d3d"
+    },
+    {
+      "id": "W031",
+      "source": "点击回应 - 开心跃动.webm",
+      "file": "w031.gif",
+      "bytes": 119048,
+      "sha256": "b702e85eea13c56ac77330e31e07d3334cf9afb8fca918a6ff95d285a3331df5"
+    },
+    {
+      "id": "W032",
+      "source": "玩游戏气急败坏.webm",
+      "file": "w032.gif",
+      "bytes": 127876,
+      "sha256": "275e19629eb1b1cbeb1642192ea4a66aa745a5d49642ee1464a43707299e83b3"
+    },
+    {
+      "id": "W033",
+      "source": "用鲸鱼尾巴拍打地面.webm",
+      "file": "w033.gif",
+      "bytes": 122237,
+      "sha256": "767f617377e6a84edc70c6320f0a17e33d13ea75eeae1cf71314d15ac6e30023"
+    },
+    {
+      "id": "W034",
+      "source": "看天气.webm",
+      "file": "w034.gif",
+      "bytes": 122866,
+      "sha256": "1189b4692ec45688f02c2a2764301aa26853403557cd32250474580267e064d7"
+    },
+    {
+      "id": "W035",
+      "source": "看表叹气.webm",
+      "file": "w035.gif",
+      "bytes": 120689,
+      "sha256": "10c65a60ef62f56228fd68c2ee9d7f34f8d31567bdde373c80c625e41fb11bb4"
+    },
+    {
+      "id": "W036",
+      "source": "睡眼惺忪.webm",
+      "file": "w036.gif",
+      "bytes": 119968,
+      "sha256": "e338c51f193a9fa078780e443026810bb9226b87d761dd07c693f3d4053986e4"
+    },
+    {
+      "id": "W037",
+      "source": "睡觉第一段.webm",
+      "file": "w037.gif",
+      "bytes": 111891,
+      "sha256": "90ba029f8ff86f4f76ec4720f183c8f070c704a4551e5a736f35c666edf039f6"
+    },
+    {
+      "id": "W038",
+      "source": "睡觉第三段.webm",
+      "file": "w038.gif",
+      "bytes": 118222,
+      "sha256": "de9fd892920748fd8b2c9d7082e7a55b83fa0e847202fc2ae9dad236d544dfbe"
+    },
+    {
+      "id": "W039",
+      "source": "睡觉第二段.webm",
+      "file": "w039.gif",
+      "bytes": 141395,
+      "sha256": "2637dcd58bb634d5ede4a230134dca9e94ca7cdf56b27a74db2ed30d7a9c4fb9"
+    },
+    {
+      "id": "W040",
+      "source": "空白举牌.webm",
+      "file": "w040.gif",
+      "bytes": 118642,
+      "sha256": "7424cb87cad92f3c61ab3e2ecff85c3536492f435c056a061c1d2c82ef4fd079"
+    },
+    {
+      "id": "W041",
+      "source": "翻钱包.webm",
+      "file": "w041.gif",
+      "bytes": 120138,
+      "sha256": "5411cd433b65e570ea660a7242f27ec02128525adcfecea451558c72b42aff46"
+    },
+    {
+      "id": "W042",
+      "source": "螃蟹走路.webm",
+      "file": "w042.gif",
+      "bytes": 114115,
+      "sha256": "d988212b5cbbfc2a183feb5c9c2dd7346beb87d4f32515bfc46966d91f036b7a"
+    },
+    {
+      "id": "W043",
+      "source": "被吓一跳（炸毛）.webm",
+      "file": "w043.gif",
+      "bytes": 120775,
+      "sha256": "5a1c0e8337f1fd488bde40480d197987a8cd34aa7b0e0e2824d0814ee22bf58a"
+    },
+    {
+      "id": "W044",
+      "source": "被鼠标拖拽悬空反馈.webm",
+      "file": "w044.gif",
+      "bytes": 122185,
+      "sha256": "6d917a6d3dfe65e5acabebc8214e8de84a6b36929cb5b78483a3bd9150410034"
+    },
+    {
+      "id": "W045",
+      "source": "认真工作.webm",
+      "file": "w045.gif",
+      "bytes": 120677,
+      "sha256": "e9badfacaf9ba5b097222088a5eda969fe467eb007dffec2594979f8c93ddbe5"
+    },
+    {
+      "id": "W046",
+      "source": "超大伸懒腰.webm",
+      "file": "w046.gif",
+      "bytes": 116556,
+      "sha256": "646ced587f59168076b66cd4f8db0b615e6b7516dc8661ad33d95642985f827b"
+    },
+    {
+      "id": "W047",
+      "source": "迷糊犯困.webm",
+      "file": "w047.gif",
+      "bytes": 121005,
+      "sha256": "53d9c75564390edda600b7ab251bcfb16e1b6e50185727745f585d7ceda6259a"
+    },
+    {
+      "id": "W048",
+      "source": "长时间工作看表.webm",
+      "file": "w048.gif",
+      "bytes": 123030,
+      "sha256": "4f4e129569108be75ca4499fd5199de754d30151c97e33a1159653c34c43d7b5"
+    },
+    {
+      "id": "W049",
+      "source": "闲得无聊打游戏.webm",
+      "file": "w049.gif",
+      "bytes": 126556,
+      "sha256": "10ff09d13ef7c3f271ae81f8e2e1d6c7c50784ef5d6a24b25cb57650ea32c42f"
+    },
+    {
+      "id": "W050",
+      "source": "鲸鱼吐泡泡特效.webm",
+      "file": "w050.gif",
+      "bytes": 127139,
+      "sha256": "f6d60c653797483328d2fbd0a9242953937f911748ae9a7b80fabfb91ef8c2f5"
+    }
+  ]
+}

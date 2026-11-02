@@ -1,0 +1,9 @@
+--- a/main/boards/waveshare/esp32-s3-touch-amoled-2.06/whale_display.h
++++ b/main/boards/waveshare/esp32-s3-touch-amoled-2.06/whale_display.h
+@@ -32 +32 @@
+-        // Keep the 224px GIF decoder buffers; reserve room for the scaled image.
++        // Preserve the validated visible size with the smaller 160px GIF canvas.
+@@ -84 +84,2 @@
+-    static constexpr uint32_t kCharacterScale = 307;  // 119.9%, about 269px.
++    static constexpr uint32_t kCharacterScale =
++        430;  // 160px * 430/256 = 268.75px, same visible size.

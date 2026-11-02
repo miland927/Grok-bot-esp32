@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-23",
+  "scope": "USB resource-only update",
+  "tests": {
+    "total": 156,
+    "passed": 149,
+    "skipped": 7,
+    "failed": 0
+  },
+  "browser": {
+    "passed": true,
+    "checks": 5,
+    "console_errors": 0
+  },
+  "full_backup_verified": true,
+  "device_resource_install_verified": true,
+  "protected_regions_unchanged": true,
+  "application_written": false,
+  "reboot_requested": true,
+  "physical_playback_confirmed": true,
+  "physical_touch_voice_confirmed": true,
+  "physical_rollback_verified": true,
+  "simulated_rollback_verified": true,
+  "new_action_registry_supported": false,
+  "atomic_power_loss_recovery": false,
+  "post_rollback_playback_confirmed": true,
+  "post_rollback_touch_voice_confirmed": false,
+  "human_acceptance_scope": "Installed temporary happy resource: animation, touch and voice passed. After rollback: original idle animation and voice passed. No post-rollback touch retest.",
+  "rollback_completed_at": "2026-10-23T18:50:50+09:00",
+  "rollback_elapsed_seconds": 133.765,
+  "current_resource_sha256": "ecf10886f99d366d91a5c44b414e248ebd74ad619ec42c341fe42113a5bd6c16",
+  "post_rollback_voice_confirmed": true,
+  "post_rollback_touch_confirmed": null,
+  "post_rollback_touch_note": "Touch not separately retested after rollback; passed before rollback.",
+  "human_acceptance_recorded_at": "2026-10-23T18:57:09+09:00",
+  "existing_action_resource_update_round_accepted": true
+}

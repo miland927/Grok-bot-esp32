@@ -1,0 +1,7 @@
+{
+  "esp_idf_path": null,
+  "serial_port_hint": null,
+  "device_identity": null,
+  "backup_directory": null,
+  "build_jobs": 4
+}

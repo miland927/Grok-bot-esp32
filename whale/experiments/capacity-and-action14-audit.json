@@ -1,0 +1,574 @@
+{
+  "date": "2026-10-23",
+  "scope": "Offline audit and host candidate only; device unchanged",
+  "device_reference_resource_sha256": "ecf10886f99d366d91a5c44b414e248ebd74ad619ec42c341fe42113a5bd6c16",
+  "resource_audit": {
+    "scope": "resource_partition_only",
+    "bytes": 9101165,
+    "capacity": 10485760,
+    "used_percent": 86.8,
+    "physical_flash_capacity": 33554432,
+    "resource_share_of_physical_flash_percent": 27.12,
+    "free_bytes": 1384595,
+    "packing_headroom_bytes": 336019,
+    "categories": {
+      "animations": {
+        "bytes": 6115206,
+        "count": 13
+      },
+      "fonts": {
+        "bytes": 2609092,
+        "count": 1
+      },
+      "speech_models": {
+        "bytes": 291042,
+        "count": 1
+      },
+      "other_images": {
+        "bytes": 82498,
+        "count": 21
+      },
+      "metadata": {
+        "bytes": 1613,
+        "count": 1
+      },
+      "other": {
+        "bytes": 0,
+        "count": 0
+      }
+    },
+    "container_overhead_bytes": 1714,
+    "files": [
+      {
+        "file": "angry.png",
+        "bytes": 3657,
+        "category": "other_images",
+        "referenced_in_index": false
+      },
+      {
+        "file": "confident.png",
+        "bytes": 3735,
+        "category": "other_images",
+        "referenced_in_index": false
+      },
+      {
+        "file": "confused.png",
+        "bytes": 3622,
+        "category": "other_images",
+        "referenced_in_index": false
+      },
+      {
+        "file": "cool.png",
+        "bytes": 3591,
+        "category": "other_images",
+        "referenced_in_index": false
+      },
+      {
+        "file": "crying.png",
+        "bytes": 4368,
+        "category": "other_images",
+        "referenced_in_index": false
+      },
+      {
+        "file": "delicious.png",
+        "bytes": 4044,
+        "category": "other_images",
+        "referenced_in_index": false
+      },
+      {
+        "file": "embarrassed.png",
+        "bytes": 4255,
+        "category": "other_images",
+        "referenced_in_index": false
+      },
+      {
+        "file": "font_noto_sans_common_30_4.bin",
+        "bytes": 2609092,
+        "category": "fonts",
+        "referenced_in_index": true
+      },
+      {
+        "file": "funny.png",
+        "bytes": 4570,
+        "category": "other_images",
+        "referenced_in_index": false
+      },
+      {
+        "file": "happy.png",
+        "bytes": 3591,
+        "category": "other_images",
+        "referenced_in_index": false
+      },
+      {
+        "file": "index.json",
+        "bytes": 1613,
+        "category": "metadata",
+        "referenced_in_index": true
+      },
+      {
+        "file": "kissy.png",
+        "bytes": 3992,
+        "category": "other_images",
+        "referenced_in_index": false
+      },
+      {
+        "file": "laughing.png",
+        "bytes": 4276,
+        "category": "other_images",
+        "referenced_in_index": false
+      },
+      {
+        "file": "loving.png",
+        "bytes": 4019,
+        "category": "other_images",
+        "referenced_in_index": false
+      },
+      {
+        "file": "neutral.png",
+        "bytes": 3256,
+        "category": "other_images",
+        "referenced_in_index": false
+      },
+      {
+        "file": "relaxed.png",
+        "bytes": 3775,
+        "category": "other_images",
+        "referenced_in_index": false
+      },
+      {
+        "file": "sad.png",
+        "bytes": 3641,
+        "category": "other_images",
+        "referenced_in_index": false
+      },
+      {
+        "file": "shocked.png",
+        "bytes": 4316,
+        "category": "other_images",
+        "referenced_in_index": false
+      },
+      {
+        "file": "silly.png",
+        "bytes": 3920,
+        "category": "other_images",
+        "referenced_in_index": false
+      },
+      {
+        "file": "sleepy.png",
+        "bytes": 4044,
+        "category": "other_images",
+        "referenced_in_index": false
+      },
+      {
+        "file": "srmodels.bin",
+        "bytes": 291042,
+        "category": "speech_models",
+        "referenced_in_index": true
+      },
+      {
+        "file": "surprised.png",
+        "bytes": 3707,
+        "category": "other_images",
+        "referenced_in_index": false
+      },
+      {
+        "file": "thinking.png",
+        "bytes": 4322,
+        "category": "other_images",
+        "referenced_in_index": false
+      },
+      {
+        "file": "w001.gif",
+        "bytes": 465620,
+        "category": "animations",
+        "referenced_in_index": true,
+        "width": 160,
+        "height": 160,
+        "frames": 80,
+        "duration_ms": 10010,
+        "encoded_fps": 7.992
+      },
+      {
+        "file": "w006.gif",
+        "bytes": 475566,
+        "category": "animations",
+        "referenced_in_index": true,
+        "width": 160,
+        "height": 160,
+        "frames": 80,
+        "duration_ms": 10010,
+        "encoded_fps": 7.992
+      },
+      {
+        "file": "w012.gif",
+        "bytes": 481020,
+        "category": "animations",
+        "referenced_in_index": true,
+        "width": 160,
+        "height": 160,
+        "frames": 80,
+        "duration_ms": 10010,
+        "encoded_fps": 7.992
+      },
+      {
+        "file": "w015.gif",
+        "bytes": 485341,
+        "category": "animations",
+        "referenced_in_index": true,
+        "width": 160,
+        "height": 160,
+        "frames": 80,
+        "duration_ms": 10010,
+        "encoded_fps": 7.992
+      },
+      {
+        "file": "w019.gif",
+        "bytes": 492876,
+        "category": "animations",
+        "referenced_in_index": true,
+        "width": 160,
+        "height": 160,
+        "frames": 80,
+        "duration_ms": 10010,
+        "encoded_fps": 7.992
+      },
+      {
+        "file": "w024.gif",
+        "bytes": 472853,
+        "category": "animations",
+        "referenced_in_index": true,
+        "width": 160,
+        "height": 160,
+        "frames": 80,
+        "duration_ms": 10010,
+        "encoded_fps": 7.992
+      },
+      {
+        "file": "w027.gif",
+        "bytes": 461713,
+        "category": "animations",
+        "referenced_in_index": true,
+        "width": 160,
+        "height": 160,
+        "frames": 80,
+        "duration_ms": 10010,
+        "encoded_fps": 7.992
+      },
+      {
+        "file": "w029.gif",
+        "bytes": 423599,
+        "category": "animations",
+        "referenced_in_index": true,
+        "width": 160,
+        "height": 160,
+        "frames": 80,
+        "duration_ms": 10010,
+        "encoded_fps": 7.992
+      },
+      {
+        "file": "w030.gif",
+        "bytes": 468447,
+        "category": "animations",
+        "referenced_in_index": true,
+        "width": 160,
+        "height": 160,
+        "frames": 80,
+        "duration_ms": 10010,
+        "encoded_fps": 7.992
+      },
+      {
+        "file": "w031.gif",
+        "bytes": 461551,
+        "category": "animations",
+        "referenced_in_index": true,
+        "width": 160,
+        "height": 160,
+        "frames": 80,
+        "duration_ms": 10010,
+        "encoded_fps": 7.992
+      },
+      {
+        "file": "w035.gif",
+        "bytes": 485073,
+        "category": "animations",
+        "referenced_in_index": true,
+        "width": 160,
+        "height": 160,
+        "frames": 80,
+        "duration_ms": 10010,
+        "encoded_fps": 7.992
+      },
+      {
+        "file": "w043.gif",
+        "bytes": 477042,
+        "category": "animations",
+        "referenced_in_index": true,
+        "width": 160,
+        "height": 160,
+        "frames": 80,
+        "duration_ms": 10010,
+        "encoded_fps": 7.992
+      },
+      {
+        "file": "w046.gif",
+        "bytes": 464505,
+        "category": "animations",
+        "referenced_in_index": true,
+        "width": 160,
+        "height": 160,
+        "frames": 80,
+        "duration_ms": 10010,
+        "encoded_fps": 7.992
+      },
+      {
+        "file": "winking.png",
+        "bytes": 3797,
+        "category": "other_images",
+        "referenced_in_index": false
+      }
+    ],
+    "duplicate_payload_savings_bytes": 0,
+    "not_referenced_in_index": [
+      "angry.png",
+      "confident.png",
+      "confused.png",
+      "cool.png",
+      "crying.png",
+      "delicious.png",
+      "embarrassed.png",
+      "funny.png",
+      "happy.png",
+      "kissy.png",
+      "laughing.png",
+      "loving.png",
+      "neutral.png",
+      "relaxed.png",
+      "sad.png",
+      "shocked.png",
+      "silly.png",
+      "sleepy.png",
+      "surprised.png",
+      "thinking.png",
+      "winking.png"
+    ],
+    "emotion_aliases": [
+      {
+        "name": "neutral",
+        "file": "w024.gif"
+      },
+      {
+        "name": "happy",
+        "file": "w031.gif"
+      },
+      {
+        "name": "laughing",
+        "file": "w024.gif"
+      },
+      {
+        "name": "funny",
+        "file": "w024.gif"
+      },
+      {
+        "name": "sad",
+        "file": "w024.gif"
+      },
+      {
+        "name": "angry",
+        "file": "w024.gif"
+      },
+      {
+        "name": "crying",
+        "file": "w024.gif"
+      },
+      {
+        "name": "loving",
+        "file": "w024.gif"
+      },
+      {
+        "name": "embarrassed",
+        "file": "w024.gif"
+      },
+      {
+        "name": "surprised",
+        "file": "w024.gif"
+      },
+      {
+        "name": "shocked",
+        "file": "w024.gif"
+      },
+      {
+        "name": "thinking",
+        "file": "w019.gif"
+      },
+      {
+        "name": "winking",
+        "file": "w024.gif"
+      },
+      {
+        "name": "cool",
+        "file": "w024.gif"
+      },
+      {
+        "name": "relaxed",
+        "file": "w024.gif"
+      },
+      {
+        "name": "delicious",
+        "file": "w024.gif"
+      },
+      {
+        "name": "kissy",
+        "file": "w024.gif"
+      },
+      {
+        "name": "confident",
+        "file": "w024.gif"
+      },
+      {
+        "name": "sleepy",
+        "file": "w024.gif"
+      },
+      {
+        "name": "silly",
+        "file": "w024.gif"
+      },
+      {
+        "name": "confused",
+        "file": "w024.gif"
+      },
+      {
+        "name": "w001",
+        "file": "w001.gif"
+      },
+      {
+        "name": "w006",
+        "file": "w006.gif"
+      },
+      {
+        "name": "w019",
+        "file": "w019.gif"
+      },
+      {
+        "name": "w024",
+        "file": "w024.gif"
+      },
+      {
+        "name": "w027",
+        "file": "w027.gif"
+      },
+      {
+        "name": "w029",
+        "file": "w029.gif"
+      },
+      {
+        "name": "w030",
+        "file": "w030.gif"
+      },
+      {
+        "name": "w031",
+        "file": "w031.gif"
+      },
+      {
+        "name": "w035",
+        "file": "w035.gif"
+      },
+      {
+        "name": "w043",
+        "file": "w043.gif"
+      },
+      {
+        "name": "w012",
+        "file": "w012.gif"
+      },
+      {
+        "name": "w015",
+        "file": "w015.gif"
+      },
+      {
+        "name": "w046",
+        "file": "w046.gif"
+      }
+    ],
+    "native_emotions_using_neutral": [
+      "laughing",
+      "funny",
+      "sad",
+      "angry",
+      "crying",
+      "loving",
+      "embarrassed",
+      "surprised",
+      "shocked",
+      "winking",
+      "cool",
+      "relaxed",
+      "delicious",
+      "kissy",
+      "confident",
+      "sleepy",
+      "silly",
+      "confused"
+    ],
+    "runtime_cpu_percent": null,
+    "runtime_ram_bytes": null,
+    "actual_render_fps": null
+  },
+  "application_image_from_verified_backup": {
+    "bytes": 5086576,
+    "partition_bytes": 6291456,
+    "used_percent": 80.85,
+    "runtime_measurement": false
+  },
+  "lossless_repack": {
+    "animation_bytes_before": 6115206,
+    "animation_bytes_after": 5934824,
+    "saved_bytes": 180382,
+    "independent_decoded_rgba_timing_loop_match": true,
+    "physical_decoder_tested": false
+  },
+  "fourteenth_action": {
+    "source_id": "W002",
+    "name": "举牌不是大肥鱼",
+    "candidate_sha256": "7b7f189145d648fe655bf74d2140d792b494c31231f88f1b5761f5e460f45e9a",
+    "candidate_bytes": 9368787,
+    "free_percent": 10.65,
+    "action_count": 14,
+    "installed": false,
+    "dynamic_engine_required": true
+  },
+  "tests": {
+    "total": 161,
+    "passed": 154,
+    "skipped": 7
+  },
+  "emotion_issue": {
+    "native_aliases_fall_back_to_idle": [
+      "laughing",
+      "funny",
+      "sad",
+      "angry",
+      "crying",
+      "loving",
+      "embarrassed",
+      "surprised",
+      "shocked",
+      "winking",
+      "cool",
+      "relaxed",
+      "delicious",
+      "kissy",
+      "confident",
+      "sleepy",
+      "silly",
+      "confused"
+    ],
+    "live_trace_captured": false,
+    "cause_of_user_symptom_confirmed": false
+  },
+  "source_blocker": "Latest 13-action/v7 source is absent; no application changes or writes.",
+  "browser": {
+    "passed": true,
+    "checks": 7,
+    "javascript_or_security_errors": 0
+  }
+}

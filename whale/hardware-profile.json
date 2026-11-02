@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "manufacturer": "Waveshare",
+  "product": "ESP32-S3-Touch-AMOLED-2.06",
+  "chip": "esp32s3",
+  "flash_bytes": 33554432,
+  "psram_bytes": 8388608,
+  "display": {"width": 410, "height": 502},
+  "board_directory": "main/boards/waveshare/esp32-s3-touch-amoled-2.06",
+  "build_board": "waveshare/esp32-s3-touch-amoled-2.06",
+  "build_variant": "esp32-s3-touch-amoled-2.06-whale",
+  "esp_idf_version": "6.1",
+  "partition_table": "partitions/whale-32m.csv",
+  "allowed_write_partitions": {
+    "ota_1": {"offset": "0x1000000", "size": "0x600000"},
+    "assets": {"offset": "0x1600000", "size": "0xa00000"}
+  },
+  "protected_partitions": ["nvs", "otadata", "phy_init", "model", "factory", "ota_0"],
+  "rules": [
+    "Board pin definitions remain in the referenced config.h; never infer pins from another S3 board.",
+    "Physical device identity and actual partition table must be checked before each write.",
+    "Do not use generic idf.py flash, merged images, erase-flash, or write bootloader/partition/NVS/OTA selection.",
+    "No serial port, SDK absolute path, device MAC, credentials, or private backup belongs in this shared profile."
+  ]
+}

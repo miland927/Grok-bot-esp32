@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-23",
+  "scope": "host-only manager foundation",
+  "base_commit": "fcbb152fbf4a4b9a7f0133b450c812341c5d4c81",
+  "tests": {
+    "total": 140,
+    "passed": 133,
+    "skipped": 7,
+    "failed": 0,
+    "elapsed_seconds": 26.39
+  },
+  "browser": {
+    "passed": true,
+    "checks": 8,
+    "console_errors": 0
+  },
+  "firmware_modified": false,
+  "firmware_built": false,
+  "physical_device_checked": false,
+  "firmware_written": false,
+  "dynamic_device_registry_integrated": false,
+  "device_delta_installer_integrated": false,
+  "integration_blocker": "Latest 13-action/v7 complete source is absent from this checkout."
+}

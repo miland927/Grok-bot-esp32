@@ -1,0 +1,14 @@
+{
+  "app_address": "0x1000000",
+  "bytes": 2881488,
+  "sha256": "202236572a5809360e093f025dc31b351b7bb9db0e211ebc55f50b6d68e59f9d",
+  "assets_sha256": "e11afaa6e30672eaa1aa90e9e0141a53bc2ff76797d92899eff0978087b0f147",
+  "assets_written": false,
+  "bootloader_written": false,
+  "partitions_written": false,
+  "nvs_written": false,
+  "action_count": 10,
+  "scale": 430,
+  "viewport": 272,
+  "physical_acceptance": "pending"
+}

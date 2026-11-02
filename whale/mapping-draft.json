@@ -1,0 +1,423 @@
+{
+  "status": "Draft only; not active firmware rules",
+  "source_commit": "b5ce53cfa87b9fc669eef2aabe64946bb77adb72",
+  "entries": [
+    {
+      "id": "W001",
+      "name": "东张西望.webm",
+      "category_proposal": "待机 / 休闲候选",
+      "trigger_proposal": "低频空闲轮播或动作选择入口；可被对话打断",
+      "preview_review": "1/5/9-second samples inspected; full motion review pending",
+      "device_status": "v5 first user playback confirmation passed; repeated playback and full-system acceptance pending"
+    },
+    {
+      "id": "W002",
+      "name": "举牌不是大肥鱼.webm",
+      "category_proposal": "特定动作 / 情绪候选",
+      "trigger_proposal": "动作选择入口主动播放；只有语义合适时再绑定事件或情绪",
+      "preview_review": "1/5/9-second samples inspected; full motion review pending",
+      "device_status": "Not adapted yet"
+    },
+    {
+      "id": "W003",
+      "name": "偷吃Token.webm",
+      "category_proposal": "特定动作 / 情绪候选",
+      "trigger_proposal": "动作选择入口主动播放；只有语义合适时再绑定事件或情绪",
+      "preview_review": "1/5/9-second samples inspected; full motion review pending",
+      "device_status": "Not adapted yet"
+    },
+    {
+      "id": "W004",
+      "name": "偷吃零食被抓住.webm",
+      "category_proposal": "特定动作 / 情绪候选",
+      "trigger_proposal": "动作选择入口主动播放；只有语义合适时再绑定事件或情绪",
+      "preview_review": "1/5/9-second samples inspected; full motion review pending",
+      "device_status": "Not adapted yet"
+    },
+    {
+      "id": "W005",
+      "name": "原地专心玩魔方.webm",
+      "category_proposal": "待机 / 休闲候选",
+      "trigger_proposal": "低频空闲轮播或动作选择入口；可被对话打断",
+      "preview_review": "1/5/9-second samples inspected; full motion review pending",
+      "device_status": "Not adapted yet"
+    },
+    {
+      "id": "W006",
+      "name": "原地小憩沉眠.webm",
+      "category_proposal": "困倦 / 睡眠 / 唤醒",
+      "trigger_proposal": "空闲计时或唤醒；入睡、睡眠循环和醒来按次序衔接",
+      "preview_review": "1/5/9-second samples inspected; full motion review pending",
+      "device_status": "v5 first user playback confirmation passed; repeated playback and full-system acceptance pending"
+    },
+    {
+      "id": "W007",
+      "name": "原地敲击桌面互动.webm",
+      "category_proposal": "待机 / 休闲候选",
+      "trigger_proposal": "低频空闲轮播或动作选择入口；可被对话打断",
+      "preview_review": "1/5/9-second samples inspected; full motion review pending",
+      "device_status": "Not adapted yet"
+    },
+    {
+      "id": "W008",
+      "name": "原地漂浮踏步.webm",
+      "category_proposal": "待机 / 休闲候选",
+      "trigger_proposal": "低频空闲轮播或动作选择入口；可被对话打断",
+      "preview_review": "1/5/9-second samples inspected; full motion review pending",
+      "device_status": "Not adapted yet"
+    },
+    {
+      "id": "W009",
+      "name": "原地跳跃抓碎头顶物品.webm",
+      "category_proposal": "待机 / 休闲候选",
+      "trigger_proposal": "低频空闲轮播或动作选择入口；可被对话打断",
+      "preview_review": "1/5/9-second samples inspected; full motion review pending",
+      "device_status": "Not adapted yet"
+    },
+    {
+      "id": "W010",
+      "name": "原地蹲下玩玩具汽车.webm",
+      "category_proposal": "待机 / 休闲候选",
+      "trigger_proposal": "低频空闲轮播或动作选择入口；可被对话打断",
+      "preview_review": "1/5/9-second samples inspected; full motion review pending",
+      "device_status": "Not adapted yet"
+    },
+    {
+      "id": "W011",
+      "name": "原地重力下蹲压缩.webm",
+      "category_proposal": "待机 / 休闲候选",
+      "trigger_proposal": "低频空闲轮播或动作选择入口；可被对话打断",
+      "preview_review": "1/5/9-second samples inspected; full motion review pending",
+      "device_status": "Not adapted yet"
+    },
+    {
+      "id": "W012",
+      "name": "吃小鱼干.webm",
+      "category_proposal": "特定动作 / 情绪候选",
+      "trigger_proposal": "动作选择入口主动播放；只有语义合适时再绑定事件或情绪",
+      "preview_review": "1/5/9-second samples inspected; full motion review pending",
+      "device_status": "Not adapted yet"
+    },
+    {
+      "id": "W013",
+      "name": "吃盒饭.webm",
+      "category_proposal": "特定动作 / 情绪候选",
+      "trigger_proposal": "动作选择入口主动播放；只有语义合适时再绑定事件或情绪",
+      "preview_review": "1/5/9-second samples inspected; full motion review pending",
+      "device_status": "Not adapted yet"
+    },
+    {
+      "id": "W014",
+      "name": "哈欠连天.webm",
+      "category_proposal": "困倦 / 睡眠 / 唤醒",
+      "trigger_proposal": "空闲计时或唤醒；入睡、睡眠循环和醒来按次序衔接",
+      "preview_review": "1/5/9-second samples inspected; full motion review pending",
+      "device_status": "Not adapted yet"
+    },
+    {
+      "id": "W015",
+      "name": "喝奶茶.webm",
+      "category_proposal": "特定动作 / 情绪候选",
+      "trigger_proposal": "动作选择入口主动播放；只有语义合适时再绑定事件或情绪",
+      "preview_review": "1/5/9-second samples inspected; full motion review pending",
+      "device_status": "Not adapted yet"
+    },
+    {
+      "id": "W016",
+      "name": "女仆屈膝礼仪.webm",
+      "category_proposal": "待机 / 休闲候选",
+      "trigger_proposal": "低频空闲轮播或动作选择入口；可被对话打断",
+      "preview_review": "1/5/9-second samples inspected; full motion review pending",
+      "device_status": "Not adapted yet"
+    },
+    {
+      "id": "W017",
+      "name": "女仆扫除.webm",
+      "category_proposal": "特定动作 / 情绪候选",
+      "trigger_proposal": "动作选择入口主动播放；只有语义合适时再绑定事件或情绪",
+      "preview_review": "1/5/9-second samples inspected; full motion review pending",
+      "device_status": "Not adapted yet"
+    },
+    {
+      "id": "W018",
+      "name": "小幅度原地 360 度旋转展示.webm",
+      "category_proposal": "待机 / 休闲候选",
+      "trigger_proposal": "低频空闲轮播或动作选择入口；可被对话打断",
+      "preview_review": "1/5/9-second samples inspected; full motion review pending",
+      "device_status": "Not adapted yet"
+    },
+    {
+      "id": "W019",
+      "name": "工作思考.webm",
+      "category_proposal": "工作 / 思考",
+      "trigger_proposal": "当前已接入：收到用户转写后等待回答",
+      "preview_review": "1/5/9-second samples inspected; full motion review pending",
+      "device_status": "v5 first user playback confirmation passed; repeated playback and full-system acceptance pending"
+    },
+    {
+      "id": "W020",
+      "name": "工作摸鱼.webm",
+      "category_proposal": "工作 / 等待 / 任务",
+      "trigger_proposal": "等待回答或任务事件；开始、结束和被打扰应分别处理",
+      "preview_review": "1/5/9-second samples inspected; full motion review pending",
+      "device_status": "Not adapted yet"
+    },
+    {
+      "id": "W021",
+      "name": "工作结束.webm",
+      "category_proposal": "工作结束 / 庆祝",
+      "trigger_proposal": "任务完成时播放；不在每个语音小片段结束时重复播放",
+      "preview_review": "1/5/9-second samples inspected; full motion review pending",
+      "device_status": "Not adapted yet"
+    },
+    {
+      "id": "W022",
+      "name": "工作被打扰.webm",
+      "category_proposal": "工作 / 等待 / 任务",
+      "trigger_proposal": "等待回答或任务事件；开始、结束和被打扰应分别处理",
+      "preview_review": "1/5/9-second samples inspected; full motion review pending",
+      "device_status": "Not adapted yet"
+    },
+    {
+      "id": "W023",
+      "name": "开始工作.webm",
+      "category_proposal": "工作开始",
+      "trigger_proposal": "进入任务场景的一次性过渡",
+      "preview_review": "1/5/9-second samples inspected; full motion review pending",
+      "device_status": "Not adapted yet"
+    },
+    {
+      "id": "W024",
+      "name": "待机呼吸休闲.webm",
+      "category_proposal": "默认待机",
+      "trigger_proposal": "当前已接入：中性状态与其他动作结束后的回退",
+      "preview_review": "1/5/9-second samples inspected; full motion review pending",
+      "device_status": "v5 first user playback confirmation passed; repeated playback and full-system acceptance pending"
+    },
+    {
+      "id": "W025",
+      "name": "悠闲哼歌.webm",
+      "category_proposal": "待机 / 休闲候选",
+      "trigger_proposal": "低频空闲轮播或动作选择入口；可被对话打断",
+      "preview_review": "1/5/9-second samples inspected; full motion review pending",
+      "device_status": "Not adapted yet"
+    },
+    {
+      "id": "W026",
+      "name": "打喷嚏.webm",
+      "category_proposal": "待机 / 休闲候选",
+      "trigger_proposal": "低频空闲轮播或动作选择入口；可被对话打断",
+      "preview_review": "1/5/9-second samples inspected; full motion review pending",
+      "device_status": "Not adapted yet"
+    },
+    {
+      "id": "W027",
+      "name": "打瞌睡被惊醒.webm",
+      "category_proposal": "困倦 / 睡眠 / 唤醒",
+      "trigger_proposal": "空闲计时或唤醒；入睡、睡眠循环和醒来按次序衔接",
+      "preview_review": "1/5/9-second samples inspected; full motion review pending",
+      "device_status": "v5 first user playback confirmation passed; repeated playback and full-system acceptance pending"
+    },
+    {
+      "id": "W028",
+      "name": "摸鱼被抓.webm",
+      "category_proposal": "工作 / 等待 / 任务",
+      "trigger_proposal": "等待回答或任务事件；开始、结束和被打扰应分别处理",
+      "preview_review": "1/5/9-second samples inspected; full motion review pending",
+      "device_status": "Not adapted yet"
+    },
+    {
+      "id": "W029",
+      "name": "点击回应 - 傲娇生气（侧身展示）.webm",
+      "category_proposal": "情绪 / 触摸候选",
+      "trigger_proposal": "傲娇或生气回应候选；避免自动表达对用户的不满",
+      "preview_review": "1/5/9-second samples inspected; full motion review pending",
+      "device_status": "v5 first user playback confirmation passed; repeated playback and full-system acceptance pending"
+    },
+    {
+      "id": "W030",
+      "name": "点击回应 - 害羞惊讶.webm",
+      "category_proposal": "情绪 / 触摸候选",
+      "trigger_proposal": "害羞、惊讶或双击回应候选",
+      "preview_review": "1/5/9-second samples inspected; full motion review pending",
+      "device_status": "v5 first user playback confirmation passed; repeated playback and full-system acceptance pending"
+    },
+    {
+      "id": "W031",
+      "name": "点击回应 - 开心跃动.webm",
+      "category_proposal": "开心 / 触摸",
+      "trigger_proposal": "当前已接入：点击后开心约10秒；开心、喜爱等情绪可复用",
+      "preview_review": "1/5/9-second samples inspected; full motion review pending",
+      "device_status": "v5 first user playback confirmation passed; repeated playback and full-system acceptance pending"
+    },
+    {
+      "id": "W032",
+      "name": "玩游戏气急败坏.webm",
+      "category_proposal": "特定动作 / 情绪候选",
+      "trigger_proposal": "动作选择入口主动播放；只有语义合适时再绑定事件或情绪",
+      "preview_review": "1/5/9-second samples inspected; full motion review pending",
+      "device_status": "Not adapted yet"
+    },
+    {
+      "id": "W033",
+      "name": "用鲸鱼尾巴拍打地面.webm",
+      "category_proposal": "待机 / 休闲候选",
+      "trigger_proposal": "低频空闲轮播或动作选择入口；可被对话打断",
+      "preview_review": "1/5/9-second samples inspected; full motion review pending",
+      "device_status": "Not adapted yet"
+    },
+    {
+      "id": "W034",
+      "name": "看天气.webm",
+      "category_proposal": "特定动作 / 情绪候选",
+      "trigger_proposal": "动作选择入口主动播放；只有语义合适时再绑定事件或情绪",
+      "preview_review": "1/5/9-second samples inspected; full motion review pending",
+      "device_status": "Not adapted yet"
+    },
+    {
+      "id": "W035",
+      "name": "看表叹气.webm",
+      "category_proposal": "特定动作 / 情绪候选",
+      "trigger_proposal": "动作选择入口主动播放；只有语义合适时再绑定事件或情绪",
+      "preview_review": "1/5/9-second samples inspected; full motion review pending",
+      "device_status": "v5 first user playback confirmation passed; repeated playback and full-system acceptance pending"
+    },
+    {
+      "id": "W036",
+      "name": "睡眼惺忪.webm",
+      "category_proposal": "困倦 / 睡眠 / 唤醒",
+      "trigger_proposal": "空闲计时或唤醒；入睡、睡眠循环和醒来按次序衔接",
+      "preview_review": "1/5/9-second samples inspected; full motion review pending",
+      "device_status": "Not adapted yet"
+    },
+    {
+      "id": "W037",
+      "name": "睡觉第一段.webm",
+      "category_proposal": "入睡过渡",
+      "trigger_proposal": "进入睡眠时播放一次，随后接睡觉第二段",
+      "preview_review": "1/5/9-second samples inspected; full motion review pending",
+      "device_status": "Not adapted yet"
+    },
+    {
+      "id": "W038",
+      "name": "睡觉第三段.webm",
+      "category_proposal": "醒来过渡",
+      "trigger_proposal": "由睡眠恢复；语音唤醒响应优先，不强制等待播完",
+      "preview_review": "1/5/9-second samples inspected; full motion review pending",
+      "device_status": "Not adapted yet"
+    },
+    {
+      "id": "W039",
+      "name": "睡觉第二段.webm",
+      "category_proposal": "睡眠循环",
+      "trigger_proposal": "仅在睡眠状态循环，唤醒时及时退出",
+      "preview_review": "1/5/9-second samples inspected; full motion review pending",
+      "device_status": "Not adapted yet"
+    },
+    {
+      "id": "W040",
+      "name": "空白举牌.webm",
+      "category_proposal": "特定动作 / 情绪候选",
+      "trigger_proposal": "动作选择入口主动播放；只有语义合适时再绑定事件或情绪",
+      "preview_review": "1/5/9-second samples inspected; full motion review pending",
+      "device_status": "Not adapted yet"
+    },
+    {
+      "id": "W041",
+      "name": "翻钱包.webm",
+      "category_proposal": "特定动作 / 情绪候选",
+      "trigger_proposal": "动作选择入口主动播放；只有语义合适时再绑定事件或情绪",
+      "preview_review": "1/5/9-second samples inspected; full motion review pending",
+      "device_status": "Not adapted yet"
+    },
+    {
+      "id": "W042",
+      "name": "螃蟹走路.webm",
+      "category_proposal": "待机 / 休闲候选",
+      "trigger_proposal": "低频空闲轮播或动作选择入口；可被对话打断",
+      "preview_review": "1/5/9-second samples inspected; full motion review pending",
+      "device_status": "Not adapted yet"
+    },
+    {
+      "id": "W043",
+      "name": "被吓一跳（炸毛）.webm",
+      "category_proposal": "惊讶候选",
+      "trigger_proposal": "服务端惊讶/震惊标签候选；需完整动作审阅",
+      "preview_review": "1/5/9-second samples inspected; full motion review pending",
+      "device_status": "v5 first user playback confirmation passed; repeated playback and full-system acceptance pending"
+    },
+    {
+      "id": "W044",
+      "name": "被鼠标拖拽悬空反馈.webm",
+      "category_proposal": "触摸回应",
+      "trigger_proposal": "单击、双击、长按或拖动的候选动作；实际手势对应待确认",
+      "preview_review": "1/5/9-second samples inspected; full motion review pending",
+      "device_status": "Not adapted yet"
+    },
+    {
+      "id": "W045",
+      "name": "认真工作.webm",
+      "category_proposal": "工作 / 等待 / 任务",
+      "trigger_proposal": "等待回答或任务事件；开始、结束和被打扰应分别处理",
+      "preview_review": "1/5/9-second samples inspected; full motion review pending",
+      "device_status": "Not adapted yet"
+    },
+    {
+      "id": "W046",
+      "name": "超大伸懒腰.webm",
+      "category_proposal": "待机 / 休闲候选",
+      "trigger_proposal": "低频空闲轮播或动作选择入口；可被对话打断",
+      "preview_review": "1/5/9-second samples inspected; full motion review pending",
+      "device_status": "Not adapted yet"
+    },
+    {
+      "id": "W047",
+      "name": "迷糊犯困.webm",
+      "category_proposal": "困倦 / 睡眠 / 唤醒",
+      "trigger_proposal": "空闲计时或唤醒；入睡、睡眠循环和醒来按次序衔接",
+      "preview_review": "1/5/9-second samples inspected; full motion review pending",
+      "device_status": "Not adapted yet"
+    },
+    {
+      "id": "W048",
+      "name": "长时间工作看表.webm",
+      "category_proposal": "工作 / 等待 / 任务",
+      "trigger_proposal": "等待回答或任务事件；开始、结束和被打扰应分别处理",
+      "preview_review": "1/5/9-second samples inspected; full motion review pending",
+      "device_status": "Not adapted yet"
+    },
+    {
+      "id": "W049",
+      "name": "闲得无聊打游戏.webm",
+      "category_proposal": "待机 / 休闲候选",
+      "trigger_proposal": "低频空闲轮播或动作选择入口；可被对话打断",
+      "preview_review": "1/5/9-second samples inspected; full motion review pending",
+      "device_status": "Not adapted yet"
+    },
+    {
+      "id": "W050",
+      "name": "鲸鱼吐泡泡特效.webm",
+      "category_proposal": "待机 / 休闲候选",
+      "trigger_proposal": "低频空闲轮播或动作选择入口；可被对话打断",
+      "preview_review": "1/5/9-second samples inspected; full motion review pending",
+      "device_status": "Not adapted yet"
+    }
+  ],
+  "active_subset": {
+    "version": "v5",
+    "ids": [
+      "W001",
+      "W006",
+      "W019",
+      "W024",
+      "W027",
+      "W029",
+      "W030",
+      "W031",
+      "W035",
+      "W043"
+    ],
+    "rules": "docs/whale/ACTIONS.md",
+    "physical_acceptance": "First user check passed for menu, 10 actions, restore and voice interruption; emotion-tag coverage and repetitions pending"
+  }
+}

@@ -1,0 +1,44 @@
+[
+  {
+    "file": "neutral-8fps-64colors-none.gif",
+    "frames": 80,
+    "size": [
+      224,
+      224
+    ],
+    "gif_bytes": 852298,
+    "indexed_zlib_bytes": 748155,
+    "delta_zlib_bytes": 666971,
+    "delta_stream_bytes": 666712,
+    "changed_fraction": 0.1646,
+    "note": "Reversible relative to this quantized input; no firmware decoder or visual acceptance."
+  },
+  {
+    "file": "thinking-8fps-64colors-none.gif",
+    "frames": 80,
+    "size": [
+      224,
+      224
+    ],
+    "gif_bytes": 885455,
+    "indexed_zlib_bytes": 777548,
+    "delta_zlib_bytes": 466667,
+    "delta_stream_bytes": 466894,
+    "changed_fraction": 0.1064,
+    "note": "Reversible relative to this quantized input; no firmware decoder or visual acceptance."
+  },
+  {
+    "file": "happy-8fps-64colors-none.gif",
+    "frames": 80,
+    "size": [
+      224,
+      224
+    ],
+    "gif_bytes": 841502,
+    "indexed_zlib_bytes": 752948,
+    "delta_zlib_bytes": 680372,
+    "delta_stream_bytes": 681868,
+    "changed_fraction": 0.1718,
+    "note": "Reversible relative to this quantized input; no firmware decoder or visual acceptance."
+  }
+]

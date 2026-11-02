@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>鲸鱼工作台</title><link rel="stylesheet" href="/styles.css"><script src="/bootstrap.js" defer></script><script src="/app.js" defer></script></head>
+<body>
+<aside class="sidebar">
+  <a class="brand" href="#overview"><span class="whale">◕</span><span>鲸鱼工作台<small>本机开发与动作管理</small></span></a>
+  <div class="nav-label">工作空间</div>
+  <nav aria-label="主导航">
+    <a href="#overview" data-page="overview"><span>◈</span>设备与项目</a>
+    <a href="#library" data-page="library"><span>▦</span>动作库 <b id="navCount">—</b></a>
+    <a href="#updates" data-page="updates"><span>⇧</span>资源更新</a>
+    <a href="#tasks" data-page="tasks"><span>≡</span>任务与日志</a>
+    <a href="#metrics" data-page="metrics"><span>⌁</span>性能与验收</a>
+  </nav>
+  <div class="sidebar-bottom"><span class="status-dot"></span>本机服务已连接<small>设备状态以实际读取为准</small></div>
+</aside>
+<main>
+  <header class="topbar"><div class="breadcrumb">ESP32-S3 <span>/</span> 鲸鱼娘</div><span class="pill" id="connection">实机未核验</span></header>
+  <section class="page" id="page-overview">
+    <div class="page-title"><div><p class="eyebrow">设备与项目</p><h1>让每一次改动，都有据可查。</h1><p class="muted">管理动作、核对版本，把构建与资源更新分开。</p></div><button data-run="check" class="button secondary">检查项目 <span>↻</span></button></div>
+    <div class="notice"><span>i</span><div><strong>当前是本机工程视图</strong><p id="sourceNotice">工程中的固件、资源与实机版本分别核对。13 动作 / v7 完整源码仍待同步。</p></div></div>
+    <div class="overview-grid">
+      <article class="device-card"><div class="card-heading"><span>角色预览</span><span class="pill soft">工程资源</span></div><div class="device-shell"><div class="screen-time">鲸鱼娘</div><img id="heroWhale" alt="工程中的鲸鱼娘动画"><div class="screen-caption">你好，今天想做点什么？</div></div><div class="device-caption"><strong>Waveshare · 2.06″ AMOLED</strong><span>410 × 502 · 资源预览，不是屏幕镜像</span></div></article>
+      <div class="overview-right"><article class="card"><div class="card-heading"><h2>项目概况</h2><span id="projectStatus" class="pill soft">读取中</span></div><dl class="facts"><div><dt>目标板</dt><dd id="boardName">—</dd></div><div><dt>当前工作分支</dt><dd id="branch" class="mono">—</dd></div><div><dt>源码提交</dt><dd id="commit" class="mono">—</dd></div><div><dt>Flash / PSRAM 标称</dt><dd>32 MiB / 8 MiB</dd></div><div><dt>实机固件 / 连接</dt><dd id="deviceRuntime">未读取</dd></div></dl></article>
+      <article class="card"><div class="card-heading"><h2>资源空间</h2><span class="muted">10 MiB 资源分区</span></div><div class="space-number"><strong id="usedSize">—</strong><span id="resourceSource">当前工程包</span></div><div class="storage-bar" aria-label="资源占用"><i id="usedBar"></i><i class="reserve"></i></div><div class="storage-legend"><span><i></i>已用 <b id="usedPercent">—</b></span><span>打包保留至少 10% 余量</span></div><p class="fine">这是资源分区占用，不是 CPU 或运行内存。当前候选仍按整包传输。</p><div id="resourceBreakdown" class="resource-breakdown"></div><p class="fine" id="encodingNote"></p></article></div>
+    </div>
+    <article class="card below"><div class="card-heading"><h2>下一次更新，从动作开始</h2><a href="#library" class="text-link">打开动作库 →</a></div><div class="steps"><div><b>导入素材</b><span>GIF 或 VP9 WebM</span></div><span>→</span><div><b>预览与规则</b><span>名称、触发、冷却时间</span></div><span>→</span><div><b>生成候选包</b><span>校验容量与版本条件</span></div></div></article>
+  </section>
+  <section class="page" id="page-library" hidden>
+    <div class="page-title"><div><p class="eyebrow">动作库</p><h1>给鲸鱼娘，多一点表达。</h1><p class="muted"><span id="libraryCount">—</span> 个工程动作 · 预览及草稿保存在这台电脑</p></div><button class="button primary" id="openImport">＋ 导入动作</button></div>
+    <div class="library-toolbar"><label class="search"><span>⌕</span><input id="search" type="search" placeholder="查找名称或编号" aria-label="查找动作"></label><span class="muted" id="draftCount">没有待更新草稿</span><button id="clearDraft" class="button quiet">撤销草稿</button></div>
+    <div class="action-grid" id="actionGrid"></div>
+    <p class="fine">替换现有动作可生成资源更新候选。新增动作菜单或编辑触发规则，需要动态引擎支持，当前不会自动写入设备。</p>
+  </section>
+  <section class="page" id="page-updates" hidden>
+    <div class="page-title"><div><p class="eyebrow">资源更新</p><h1>先核对变化，再准备更新。</h1><p class="muted">先备份设备现有资源，再替换已有动作。USB 更新会重启设备。</p></div><button class="button primary" data-run="package">生成候选包 ⇧</button></div>
+    <article class="card below device-update-card"><h2>连接与备份</h2><form id="deviceForm"><div class="two-columns"><label class="field">USB 串口<input id="devicePort" placeholder="COM3" required></label><label class="field">目标设备 MAC<input id="deviceIdentity" placeholder="aa:bb:cc:dd:ee:ff" required></label></div><details><summary>本机工具路径（可选）</summary><label class="field">已安装 esptool 的包目录<input id="deviceTools" placeholder="留空使用当前 Python 环境"></label></details><div class="dialog-actions"><button type="submit" class="button secondary">保存设备配置</button><button type="button" data-device="sync" class="button secondary">核验并完整备份</button></div></form><p class="fine" id="deviceStatus">尚未读取设备资源。</p><div class="dialog-actions"><button type="button" data-device="install" id="installResource" class="button primary" disabled>安装资源并重启</button><button type="button" data-device="rollback" id="rollbackResource" class="button quiet" disabled>恢复更新前资源</button></div><p class="fine">先将设备通过 USB 连接到这台电脑。备份含私人配置，只保存在本机。资源写入期间保持供电，请勿关闭服务。</p></article>
+    <div class="two-columns"><article class="card"><h2>本次候选</h2><div id="packageInfo" class="empty">还没有生成候选包。<span>先到动作库导入或替换素材。</span></div></article><article class="card"><h2>更新条件</h2><ul class="checklist"><li class="ok">保留原工程包，安装前校验设备基线</li><li class="ok">固定字体与模型内容保持一致</li><li class="ok">检查 10% 容量余量与资源哈希</li><li class="pending">USB 安装前核验身份、分区、备份与保护区</li><li class="pending">新增菜单与规则等待动态引擎集成</li><li class="pending">设备端按文件增量安装尚未实现</li></ul><p class="fine">“候选包生成成功”不代表“设备已更新”。</p></article></div>
+  </section>
+  <section class="page" id="page-tasks" hidden>
+    <div class="page-title"><div><p class="eyebrow">任务与日志</p><h1>把等待交给工具。</h1><p class="muted">运行中可展开日志末尾；完整日志留在本机，完成后显示结果与耗时。</p></div></div>
+    <div class="task-buttons"><button data-run="check" class="button secondary">检查项目</button><button data-run="assets" class="button secondary">校验资源</button><button data-run="test" class="button secondary">主机测试</button><button data-run="build" id="buildButton" class="button secondary">构建固件</button></div><p class="fine" id="buildReason"></p>
+    <div id="taskList" class="task-list"></div>
+  </section>
+  <section class="page" id="page-metrics" hidden>
+    <div class="page-title"><div><p class="eyebrow">性能与验收</p><h1>没测到的，就留空。</h1><p class="muted">以下实时数据尚未接入设备遥测，不能用标称参数代替。</p></div><span class="pill">等待设备遥测</span></div>
+    <div class="metric-grid"><article class="card"><span>CPU · 双核占用</span><strong>— / —</strong><small>需要每核运行时间采样</small></article><article class="card"><span>空闲内部 RAM / PSRAM</span><strong>— / —</strong><small>需要实时堆内存数据</small></article><article class="card"><span>实际播放 FPS</span><strong>—</strong><small>区分回调、提交和屏幕刷新</small></article><article class="card"><span>语音推理时延</span><strong>—</strong><small>尚未取得当前设备样本</small></article></div>
+    <article class="card below"><h2>验收状态分开记录</h2><div class="acceptance"><div><b>本机检查</b><span>由任务结果记录</span></div><div><b>写入与启动</b><span id="writeAcceptance">尚无设备操作记录</span></div><div><b>真实功能</b><span>等待对应版本人工检查</span></div><div><b>持续运行与恢复</b><span>需要完整、连续的实机证据</span></div></div><p class="fine">旧记录器运行两小时但串口只在线约 9.5 分钟，不能记作两小时稳定性通过。</p></article>
+  </section>
+  <footer>本机工作台 · 原始日志和设备私密资料不随 Git 同步</footer>
+</main>
+<dialog id="importDialog"><form id="importForm"><div class="dialog-heading"><h2>导入动作素材</h2><button type="button" class="icon-button" data-close="importDialog" aria-label="关闭">×</button></div><label class="field">素材文件<input id="fileInput" type="file" accept=".gif,.webm" required></label><p class="fine">GIF 需为 160×160；VP9 WebM 会使用现有 FFmpeg 转为 160px / 8fps / 64色。最长 15 秒。</p><label class="field">用作<select id="replaceTarget"><option value="">新增动作（需要动态引擎）</option></select></label><p id="importStatus" class="form-status" role="status"></p><div class="dialog-actions"><button type="button" class="button quiet" data-close="importDialog">取消</button><button type="submit" class="button primary" id="importSubmit">导入并预览</button></div></form></dialog>
+<dialog id="editDialog"><form id="editForm"><div class="dialog-heading"><h2>动作规则草稿</h2><button type="button" class="icon-button" data-close="editDialog" aria-label="关闭">×</button></div><input type="hidden" id="editId"><label class="field">名称<input id="editLabel" maxlength="24" required></label><label class="field">触发<select id="editTrigger"></select></label><label class="field">冷却时间（毫秒）<input id="editCooldown" type="number" min="0" max="3600000" step="100" value="0"></label><p class="fine">这些规则会写入候选清单，当前固件尚不能动态激活新规则。</p><div class="dialog-actions"><button type="button" class="button quiet" data-close="editDialog">取消</button><button type="submit" class="button primary">保存草稿</button></div></form></dialog>
+<div class="toast" id="toast" role="status" hidden></div>
+</body></html>
