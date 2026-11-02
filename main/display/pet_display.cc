@@ -1,4 +1,4 @@
-﻿#include "pet_display.h"
+#include "pet_display.h"
 #include "lvgl_theme.h"
 #include "pet_imu.h"
 #include "pet_rtc.h"
@@ -255,6 +255,23 @@ std::string PetDisplay::GetPetStatus() {
              battery_level_, (int)charging_, rtc_hour_, rtc_min_, (int)drowsy_, (int)night_,
              (int)safe_mode_);
     return std::string(buf);
+}
+
+/* The pet owns the whole screen: status and notification banners would cover the
+   face, so they are logged instead of drawn. Chat subtitles still go through
+   SetChatMessage and remain visible. */
+void PetDisplay::SetStatus(const char* status) {
+    ESP_LOGI(TAG, "status: %s", status ? status : "");
+}
+
+void PetDisplay::ShowNotification(const char* notification, int duration_ms) {
+    (void)duration_ms;
+    ESP_LOGI(TAG, "notify: %s", notification ? notification : "");
+}
+
+void PetDisplay::ShowNotification(const std::string& notification, int duration_ms) {
+    (void)duration_ms;
+    ESP_LOGI(TAG, "notify: %s", notification.c_str());
 }
 
 void PetDisplay::SetEmotion(const char* emotion) {

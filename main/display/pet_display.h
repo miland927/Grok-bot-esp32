@@ -14,6 +14,9 @@ public:
 
     void SetupUI() override;
     void SetEmotion(const char* emotion) override;
+    void SetStatus(const char* status) override;
+    void ShowNotification(const char* notification, int duration_ms = 3000) override;
+    void ShowNotification(const std::string& notification, int duration_ms = 3000) override;
     void SetPetMood(const char* mood) override;
     void SetPetLook(int x_percent, int y_percent) override;
     std::string GetPetStatus() override;
