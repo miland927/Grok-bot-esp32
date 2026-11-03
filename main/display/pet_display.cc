@@ -503,12 +503,20 @@ void PetDisplay::Tick() {
             hop_v_ -= 200.0f;
             ESP_LOGI(TAG, "imu surprise dev=%.2f", imu_dev_);
         }
-        if (imu_gyro_ > 400.0f) {
-            if (now >= dizzy_until_) {
-                spin_v_ = 11.0f;
-                squash_v_ -= 1.5f;
+        /* A deliberate shake, not a casual tilt: require several consecutive
+           samples above 600 dps (about 250 ms of strong rotation). A single
+           flick of the wrist decays away without triggering the spin. */
+        if (imu_gyro_ > 600.0f) {
+            if (shake_score_ < 12) {
+                shake_score_++;
             }
+        } else if (shake_score_ > 0) {
+            shake_score_--;
+        }
+        if (shake_score_ >= 4 && now >= dizzy_until_) {
             dizzy_until_ = now + 900000;
+            spin_v_ = 8.0f;
+            squash_v_ -= 1.5f;
             ESP_LOGI(TAG, "imu dizzy gyro=%.0f", imu_gyro_);
         }
     }
@@ -714,8 +722,8 @@ void PetDisplay::Tick() {
     float eye_target = 1.0f;
 
     /* 7: idle wander follows gravity a little */
-    tx += Clampf(tilt_x_ * 0.7f, -0.6f, 0.6f);
-    ty += Clampf(tilt_y_ * 0.7f, -0.6f, 0.6f);
+    tx += Clampf(tilt_x_ * 1.0f, -0.9f, 0.9f);
+    ty += Clampf(tilt_y_ * 1.0f, -0.9f, 0.9f);
 
     /* 3: explicit mood replaces the resting gaze */
     switch (mood_) {
@@ -876,9 +884,9 @@ void PetDisplay::Render() {
     const float base_y = cy - 0.04f * ry + gy_ * 0.10f * ry;
     const float spin_c = cosf(spin_);
     const float spin_s = sinf(spin_);
-    const float ex0 = cx - eye_dx * spin_c + gx_ * 0.20f * rx;
+    const float ex0 = cx - eye_dx * spin_c + gx_ * 0.34f * rx;
     const float ey0 = base_y - eye_dx * spin_s;
-    const float ex1 = cx + eye_dx * spin_c + gx_ * 0.20f * rx;
+    const float ex1 = cx + eye_dx * spin_c + gx_ * 0.34f * rx;
     const float ey1 = base_y + eye_dx * spin_s;
 
     const float inv_rx = 1.0f / rx;
@@ -1002,6 +1010,7 @@ void PetDisplay::Render() {
     dirty_x1_ = ux1;
     dirty_y1_ = uy1;
 }
+
 
 
 

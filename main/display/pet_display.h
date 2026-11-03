@@ -70,6 +70,7 @@ private:
     int64_t blink_start_ = 0;
     bool blinking_ = false;
     bool double_blink_ = false;
+    int shake_score_ = 0;
 
     int64_t last_touch_ = 0;
     bool drowsy_ = false;
@@ -108,6 +109,7 @@ private:
 };
 
 #endif  // PET_DISPLAY_H
+
 
 
 
