@@ -481,8 +481,8 @@ void PetDisplay::Tick() {
                swing. Holding the last tilt until motion stops reads as a head
                that settles, not as a shake. */
             if (imu_gyro_ < 120.0f) {
-                tilt_x_ += (raw_x - tilt_x_) * 0.18f;
-                tilt_y_ += (raw_y - tilt_y_) * 0.18f;
+                tilt_x_ += (raw_x - tilt_x_) * 0.35f;
+                tilt_y_ += (raw_y - tilt_y_) * 0.35f;
             }
         }
         if (imu_dev_ > 0.2f || imu_gyro_ > 60.0f) {
@@ -817,8 +817,8 @@ void PetDisplay::Tick() {
         ty = cosf(t_ * 6.0f) * 0.9f;
         eye_target = 0.50f;
     }
-    Spring(&gx_, &gvx_, Clampf(tx, -1.0f, 1.0f), dt, 26.0f, 7.0f);
-    Spring(&gy_, &gvy_, Clampf(ty, -1.0f, 1.0f), dt, 26.0f, 7.0f);
+    Spring(&gx_, &gvx_, Clampf(tx, -1.0f, 1.0f), dt, 42.0f, 9.5f);
+    Spring(&gy_, &gvy_, Clampf(ty, -1.0f, 1.0f), dt, 42.0f, 9.5f);
     Spring(&squash_, &squash_v_, 0.0f, dt, 95.0f, 7.5f);
     Spring(&hop_, &hop_v_, 0.0f, dt, 60.0f, 8.5f);
     if (hop_ < -36.0f) hop_ = -36.0f;
@@ -1010,6 +1010,7 @@ void PetDisplay::Render() {
     dirty_x1_ = ux1;
     dirty_y1_ = uy1;
 }
+
 
 
 
