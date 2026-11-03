@@ -1,4 +1,4 @@
-#ifndef PET_DISPLAY_H
+﻿#ifndef PET_DISPLAY_H
 #define PET_DISPLAY_H
 
 #include "lcd_display.h"
@@ -109,6 +109,8 @@ private:
 };
 
 #endif  // PET_DISPLAY_H
+
+
 
 
 

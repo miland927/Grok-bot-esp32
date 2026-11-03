@@ -1,4 +1,4 @@
-﻿#include "pet_display.h"
+#include "pet_display.h"
 #include "lvgl_theme.h"
 #include "pet_imu.h"
 #include "pet_rtc.h"
@@ -1010,6 +1010,7 @@ void PetDisplay::Render() {
     dirty_x1_ = ux1;
     dirty_y1_ = uy1;
 }
+
 
 
 
