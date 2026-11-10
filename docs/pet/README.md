@@ -63,29 +63,9 @@ main/boards/.../config.json       板型变体（含 OTA URL / 版本号）
 
 ---
 
-## 编译与刷机
+## 编译与应用更新
 
-```powershell
-# 一次编译（会生成 build/xiaozhi.bin）
-call D:\esp\esp-idf\export.bat
-python scripts\build.py waveshare/esp32-s3-touch-amoled-2.06 --name esp32-s3-touch-amoled-2.06
-```
-
-```powershell
-# 刷机：必须用 watchdog reset，否则 USB 会掉、屏幕不亮，要拔插
-pwsh -File scripts/pet/flash.ps1 -Port COM3
-```
-
-手动等价命令：
-
-```powershell
-cd build
-python -m esptool --chip esp32s3 -p COM3 -b 460800 `
-  --before default-reset --after watchdog-reset write-flash @flash_args
-```
-
-**不要用 `idf.py flash`**：它默认用 hard reset，那会让这块板的 USB 枚举和屏幕供电
-不重新初始化，表现为“刷完黑屏、串口消失”。
+按 [跨电脑交接](HANDOFF.md) 选择标准 GrokBot 变体并编译。已有数据的设备先核验实际布局、备份并校验当前槽，得到机主授权后仅更新该应用槽，再读回校验并用 watchdog 重启。
 
 ---
 
