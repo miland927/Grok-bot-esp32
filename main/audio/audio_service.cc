@@ -765,7 +765,12 @@ void AudioService::EnableDeviceAec(bool enable) {
 
 void AudioService::SetCallbacks(AudioServiceCallbacks& callbacks) { callbacks_ = callbacks; }
 
-void AudioService::PlaySound(const std::string_view& ogg) {
+void AudioService::PlaySound(const std::string_view& ogg,
+                             const std::function<bool()>& continue_playing,
+                             int start_offset_ms, int end_offset_ms) {
+    if (service_stopped_.load()) {
+        return;
+    }
     if (!codec_->output_enabled()) {
         esp_timer_stop(audio_power_timer_);
         esp_timer_start_periodic(audio_power_timer_, AUDIO_POWER_CHECK_INTERVAL_MS * 1000);
@@ -776,15 +781,35 @@ void AudioService::PlaySound(const std::string_view& ogg) {
     size_t size = ogg.size();
 
     auto demuxer = std::make_unique<OggDemuxer>();
-    demuxer->OnPacket(
-        [this](const uint8_t* data, int sample_rate, int frame_duration_ms, size_t size) {
-            auto packet = std::make_unique<AudioStreamPacket>();
-            packet->sample_rate = sample_rate;
-            packet->frame_duration = frame_duration_ms;
-            packet->payload.resize(size);
-            std::memcpy(packet->payload.data(), data, size);
-            PushPacketToDecodeQueue(std::move(packet), true);
-        });
+    bool cancelled = false;
+    int elapsed_ms = 0;
+    const int offset_ms = start_offset_ms > 0 ? start_offset_ms : 0;
+    demuxer->OnPacket([this, &continue_playing, &cancelled, &elapsed_ms, offset_ms, end_offset_ms](
+                         const uint8_t* data, int sample_rate, int frame_duration_ms, size_t size) {
+        if (cancelled || (continue_playing && !continue_playing())) {
+            cancelled = true;
+            return;
+        }
+        const int packet_start_ms = elapsed_ms;
+        elapsed_ms += frame_duration_ms;
+        // A linked show ends the previous soundtrack before the seam; nothing
+        // past this point is queued, so the next track can start on time.
+        if (end_offset_ms > 0 && packet_start_ms >= end_offset_ms) {
+            cancelled = true;
+            return;
+        }
+        // A late show start skips the same amount of the soundtrack, so a
+        // fixed local cue (the totem burst at 1.86 s) keeps its screen time.
+        if (packet_start_ms + frame_duration_ms <= offset_ms) {
+            return;
+        }
+        auto packet = std::make_unique<AudioStreamPacket>();
+        packet->sample_rate = sample_rate;
+        packet->frame_duration = frame_duration_ms;
+        packet->payload.resize(size);
+        std::memcpy(packet->payload.data(), data, size);
+        cancelled = !PushPacketToDecodeQueue(std::move(packet), true);
+    });
     demuxer->Reset();
     demuxer->Process(buf, size);
 }

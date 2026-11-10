@@ -1,97 +1,41 @@
-# 交接说明（HANDOFF）
+# GrokBot 跨电脑交接
 
-## 仓库
+GrokBot 在独立的 [Grok-bot-esp32 仓库](https://github.com/miland927/Grok-bot-esp32) 开发，继续复用 XiaoZhi 的语音、联网和配网。另一台电脑从该仓库的 `main` 开始。旧任务文档里的本地路径、工作树和分支名只用于查开发历史。
 
-- 地址：`https://github.com/miland927/Grok-bot-esp32`
-- 主分支：`main`
-- 内容：xiaozhi-esp32 的完整固件树 + 本项目的表情层，单次导入提交（不含上游历史）
-- 上游：`78/xiaozhi-esp32`（需要拉历史时 `git remote add upstream` 自行添加）
+## 继续开发
 
-仓库里同时保留了原「鲸鱼娘」分支的代码与文档（`whale/`、`docs/whale/`、
-`scripts/whale/`、`main/display/whale_display.*`）。它们**不参与**本项目的构建路径，
-留作基座参考，后续可以单独剥离。
-
-## 当前设备状态
-
-| 项 | 值 |
-|---|---|
-| 板子 | Waveshare ESP32-S3-Touch-AMOLED-2.06 |
-| 固件 | 本项目 |
-| 启动槽 | `ota_1` @0x410000（OTA 升级后） |
-| 语音 | 已绑定小智云，唤醒词「你好小智」 |
-| 刷机口 | COM3（原生 USB） |
-
-## 构建
-
-```powershell
-call D:\esp\esp-idf\export.bat
-python scripts\build.py waveshare/esp32-s3-touch-amoled-2.06 --name esp32-s3-touch-amoled-2.06
+```sh
+git clone https://github.com/miland927/Grok-bot-esp32.git
+cd Grok-bot-esp32
+git switch main
+git pull --ff-only
 ```
 
-产物：`build/xiaozhi.bin`（约 2.9MB，分区剩余 ~30%）。
+每次换电脑先拉取，完成改动和验证后提交并推回。两台电脑都有未推送改动时，先建各自的分支保存改动，再合并。交接给新的 Codex 对话时，把仓库根目录作为工作区，先读 [AGENTS.md](../../AGENTS.md) 和本文。
 
-## 刷机
+## 构建和测试
 
-```powershell
-pwsh -File scripts/pet/flash.ps1 -Port COM3
+安装 ESP-IDF 6.1，启用它自己的 Python 和工具链环境。在仓库根目录执行：
+
+```sh
+python scripts/build.py waveshare/esp32-s3-touch-amoled-2.06 --name esp32-s3-touch-amoled-2.06
+python scripts/whale/workflow.py test
 ```
 
-**必须用 watchdog reset**（脚本已封装）。`idf.py flash` 默认 hard reset，会导致
-USB 掉线、屏幕不亮，必须拔插才能恢复——见 `DECISIONS.md` ADR-006。
+板型是 Waveshare ESP32-S3 Touch AMOLED 2.06。标准 GrokBot 变体使用双 OTA，当前实机验收使用应用分区 `ota_0`。每次实际更新前重新确认设备身份、分区布局和运行槽，备份并校验，仅按当次授权写入。换电脑后端口可能变化。旧全量刷机脚本可用于专用初始化场景，已有数据的 GrokBot 应用更新走单槽流程。
 
-## 整片备份与恢复
+## 可复现的素材
 
-- 备份在开发机的 `local-only/backups/`（不进 Git），文件名 `pet-32mb-*.bin`，
-  大小 33,554,432 字节。
-- 恢复：
+- 普通克隆自带原创默认火箭、方块、护符和烟花包。内置烟花的生成器在 [gen_public_firework.py](../../scripts/pet/gen_public_firework.py)，重新生成时需要 FFmpeg 和 libopus。
+- 如要复现机主验收时的外观和声音，通过私人渠道复制迁移包。把其中的 `local-only/` 合并到新克隆的仓库根目录。构建会自动采用该目录下的三份贴图头、烟花备用包及 PWR 音效库。当前 TNT 和图腾的音效从卡上各自的包读取。
+- 沿用原卡时可直接保留卡内 `/grokbot/`。迁移包也有电脑端暂存的同版资源，使用前按 [microSD 文档](MICROSD.md) 和 [AGENTS.md](../../AGENTS.md) 校验，卡写入需机主授权。
+- Flash 备份、串口原始日志、网络配置和本机编译目录留在各自电脑。私人迁移包包含第三方素材，仅供机主在自己的电脑间搬运。
 
-```powershell
-python -m esptool --chip esp32s3 -p COM3 write-flash 0x0 <备份>.bin
-```
+## 最近一次验收
 
-## OTA
+2026-11-10，机主确认当前板上版本的设置面板、手机热点配网、烟花、TNT 和图腾暂时无问题。板上应用 SHA-256 为 `895f2a01491190127d02400b2e4485253470df19a3a7500be8e5c537847ac9af`，应用体积约 3.25 MiB，单槽剩余约 0.69 MiB。串口确认启动后从 microSD 预载 TNT 和图腾包。公开默认贴图和音效与机主的原版素材有区别，重新编译的镜像哈希也会不同。
 
-- 设备从 NVS `wifi/ota_url` 取地址，没有则用编译时的 `CONFIG_OTA_URL`。
-- 清单：
-
-```json
-{"firmware":{"version":"1.0.1","url":"http://<host>:8000/1.0.1.bin"}}
-```
-
-- 服务器必须支持 **POST**（设备用 POST 请求清单）和 Range（下载分块）。
-  参考实现：开发机 `local-only/ota/server.py`。
-- 设备只写备用槽，校验失败自动回退，不会砖。
-- **检查失败只写日志、不弹错误**：服务器不可达时屏幕上不会出现「错误」横幅，
-  只在串口留下 `OTA check failed: ...` 并按 10s→20s→40s… 退避重试。
-- 运行时改地址：对设备说「把升级地址改成 …」，模型会调用
-  `self.system.set_ota_url`。
-
-## 已知限制
-
-| 限制 | 说明 |
-|---|---|
-| 无电池 | `battery -1%`，低电表情代码在但未触发过 |
-| 点击音效 | 已接入（仅 idle 播放），听感未人工确认 |
-| RTC 纽扣电池 | 未安装；断电后每次开机靠 NTP 校准 |
-| 屏幕闪烁历史 | 根因是 SNTP 早启动导致的复位循环，已修复并加安全模式 |
-| 脸 240px | 为帧率从 300 降下来；想更大改 `R` 与画布尺寸 |
-
-## 下一步建议（按优先级）
-
-1. **确认交互**：点击音效、屏幕闪烁、低电表情——都需要人在现场验证。
-2. **OTA 地址收口**：现在指向开发机；用 `self.system.set_ota_url` 改成长期地址。
-3. **外壳**：麦克风开孔、散热、屏幕贴合（非代码）。
-4. **可选扩展**：EAF 特效层、Wi-Fi CSI 存在感知、自定义唤醒词。
-
-## 关键文件索引
-
-| 文件 | 作用 |
-|---|---|
-| `main/display/pet_display.{h,cc}` | 表情层：渲染、状态机、手势、MCP 接口 |
-| `main/display/pet_imu.{h,c}` | QMI8658 @0x6B |
-| `main/display/pet_rtc.{h,c}` | PCF85063 @0x51，读时/写时 |
-| `main/audio/input_level.{h,c}` | 麦克风与 TTS 的只读电平表 |
-| `main/mcp_server.cc` | `self.pet.*` 与 `self.system.set_ota_url` |
-| `scripts/pet/flash.ps1` | 刷机脚本（watchdog reset） |
-| `docs/pet/ROADMAP.md` | 每个任务的目标/做法/验收/证据 |
-| `docs/pet/DECISIONS.md` | 技术选型与踩坑记录 |
+- 设置入口是顶部双击、下拉把手。正文左右换页，Wi-Fi 卡片进入手机配网流程。
+- 小球下拉放烟花、上拉触发图腾、五连点触发 TNT。TNT 和图腾在待机及配网状态可触发，语音会中断演出。
+- 服务器页等待配置地址。Signals 页显示麦克风电平和 Wi-Fi RSSI。
+- 设置实现看 `main/display/pet_controls.*`，手势和演出状态看 `pet_display.*` 与 `pet_show_state.h`，资源入口看 [MICROSD.md](MICROSD.md)。桌面原型在 [preview/top-controls.html](preview/top-controls.html)。

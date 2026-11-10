@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "face_color_dark": "#F7F7F7",
+  "face_color_light": "#101010",
+  "eye_width": 0.135,
+  "eye_height": 0.165,
+  "eye_spacing": 0.34,
+  "blink_duration_ms": 140,
+  "blink_min_ms": 1500,
+  "blink_max_ms": 5000,
+  "gaze_x": 0.34,
+  "gaze_y": 0.10,
+  "angry_eye_scale": 0.55,
+  "angry_shake_px": 0,
+  "angry_shake_hz": 12
+}

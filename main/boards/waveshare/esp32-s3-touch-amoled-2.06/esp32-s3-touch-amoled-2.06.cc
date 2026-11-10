@@ -22,6 +22,18 @@
 #include <esp_lvgl_port.h>
 #include <lvgl.h>
 
+#ifdef GROK_MEME_SOUNDS
+#include <cstring>
+#include <esp_random.h>
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
+#include <span>
+#include <string_view>
+
+extern const uint8_t meme_bank_start[] asm("_binary_grok_meme_bank_bin_start");
+extern const uint8_t meme_bank_end[] asm("_binary_grok_meme_bank_bin_end");
+#endif
+
 #if CONFIG_WAVESHARE_WHALE_VALIDATION
 #include "whale_display.h"
 using BoardDisplayBase = WhaleDisplay;
@@ -61,6 +73,31 @@ public:
                                // 0x09-300mA, 0x0A-400mA )
         WriteReg(0x63, 0x01);  // set Main battery term charge current to 25mA
     }
+
+#ifdef GROK_CONTROLS
+    bool HasBattery() {
+        constexpr uint8_t kStatus = 0x00;
+        constexpr uint8_t kBatteryPresent = 1 << 3;
+        return (ReadReg(kStatus) & kBatteryPresent) != 0;
+    }
+#endif
+
+#ifdef GROK_MEME_SOUNDS
+    bool TakePowerKeyShortPress() {
+        constexpr uint8_t kIrqStatus1 = 0x49;
+        constexpr uint8_t kShortPress = 1 << 3;
+        constexpr int kTimeoutMs = 15;
+        uint8_t status = 0;
+        if (i2c_master_transmit_receive(i2c_device_, &kIrqStatus1, 1, &status, 1, kTimeoutMs) !=
+                ESP_OK ||
+            !(status & kShortPress)) {
+            return false;
+        }
+        // AXP2101 IRQ flags are write-one-to-clear. Acknowledge only the short press.
+        const uint8_t ack[] = {kIrqStatus1, kShortPress};
+        return i2c_master_transmit(i2c_device_, ack, sizeof(ack), kTimeoutMs) == ESP_OK;
+    }
+#endif
 };
 
 #define LCD_OPCODE_WRITE_CMD (0x02ULL)
@@ -216,6 +253,55 @@ private:
 #endif
     }
 
+#ifdef GROK_MEME_SOUNDS
+    void PollPowerKey() {
+        // The bank starts with a count and a table of absolute clip offsets.
+        const std::span<const uint8_t> bank(meme_bank_start, meme_bank_end);
+        const auto read_word = [bank](size_t offset) {
+            uint32_t value;
+            std::memcpy(&value, bank.data() + offset, sizeof(value));
+            return value;
+        };
+        const uint32_t count = bank.size() >= 12 ? read_word(0) : 0;
+        if (count < 2 || count > 100 || (count + 2) * sizeof(uint32_t) > bank.size()) {
+            ESP_LOGE(TAG, "Invalid Grok sound bank");
+            return;
+        }
+
+        pmic_->TakePowerKeyShortPress();  // Discard a press latched during power-on.
+        uint32_t previous = count;
+        for (;;) {
+            vTaskDelay(pdMS_TO_TICKS(80));
+            if (!pmic_->TakePowerKeyShortPress()) {
+                continue;
+            }
+
+            auto& app = Application::GetInstance();
+            const auto state = app.GetDeviceState();
+            if ((state != kDeviceStateIdle && state != kDeviceStateStarting &&
+                 state != kDeviceStateWifiConfiguring) ||
+                !app.GetAudioService().IsPlaybackIdle()) {
+                continue;
+            }
+
+            uint32_t index = esp_random() % (previous < count ? count - 1 : count);
+            if (index >= previous) {
+                ++index;
+            }
+            const uint32_t start = read_word((index + 1) * sizeof(uint32_t));
+            const uint32_t end = read_word((index + 2) * sizeof(uint32_t));
+            if (start < (count + 2) * sizeof(uint32_t) || end <= start || end > bank.size()) {
+                ESP_LOGE(TAG, "Invalid Grok sound %lu", static_cast<unsigned long>(index));
+                continue;
+            }
+
+            previous = index;
+            app.PlaySound(std::string_view(reinterpret_cast<const char*>(bank.data() + start),
+                                           end - start));
+        }
+    }
+#endif
+
     void InitializeSH8601Display() {
         esp_lcd_panel_io_handle_t panel_io = nullptr;
         esp_lcd_panel_handle_t panel = nullptr;
@@ -267,6 +353,11 @@ private:
 #if !CONFIG_WAVESHARE_WHALE_VALIDATION
         /* the pet face reads the IMU on the shared board I2C bus */
         display_->SetSharedI2cBus(i2c_bus_);
+#ifdef GROK_CONTROLS
+        display_->SetWifiSetupHandler([this]() {
+            Application::GetInstance().Schedule([this]() { EnterWifiConfigMode(); });
+        });
+#endif
 #endif
     }
 
@@ -320,6 +411,15 @@ private:
                                EnterWifiConfigMode();
                                return true;
                            });
+#ifdef GROK_FIREWORKS
+        mcp_server.AddTool("self.pet.reload_face",
+                           "Reload /grokbot/face/profile.json from microSD without restarting. "
+                           "Returns when queued; the device logs whether the profile or defaults are applied.",
+                           PropertyList(), [this](const PropertyList&) {
+                               display_->QueueFaceReload();
+                               return true;
+                           });
+#endif
     }
 
 public:
@@ -333,6 +433,21 @@ public:
         InitializeButtons();
         InitializeTools();
     }
+
+#ifdef GROK_MEME_SOUNDS
+    void StartNetwork() override {
+        // Application has started the audio service before calling StartNetwork.
+        if (xTaskCreate(
+                [](void* context) {
+                    static_cast<WaveshareEsp32s3TouchAMOLED2inch06*>(context)->PollPowerKey();
+                    vTaskDelete(nullptr);
+                },
+                "grok_pwr", 4096, this, tskIDLE_PRIORITY + 1, nullptr) != pdPASS) {
+            ESP_LOGE(TAG, "Could not start Grok power-key task");
+        }
+        WifiBoard::StartNetwork();
+    }
+#endif
 
     virtual AudioCodec* GetAudioCodec() override {
         static BoxAudioCodec audio_codec(
@@ -356,6 +471,13 @@ public:
             last_discharging = discharging;
         }
 
+#ifdef GROK_CONTROLS
+        if (!pmic_->HasBattery()) {
+            level = -1;
+            charging = discharging = false;
+            return false;
+        }
+#endif
         level = pmic_->GetBatteryLevel();
         return true;
     }

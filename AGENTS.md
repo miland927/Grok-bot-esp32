@@ -6,10 +6,15 @@ Read PROJECT_STATE.md and docs/whale/HOST_MANAGER.md before host-tool work.
 Use python scripts/whale/workflow.py check/test/assets/package; it waits and returns one bounded result.
 Use the existing Windows host-test adapter; never recreate it in chat commands.
 The manager is localhost-only. Read docs/whale/USB_RESOURCE_UPDATES.md before device work.
-USB installation is limited to verified existing-action media replacements after full backup; candidate generation is not physical acceptance.
+Whale manager USB installation to the device's `assets` flash partition is limited to verified existing-action media replacements after a full backup. Physical acceptance requires on-device verification.
 Worktree locks apply to the new executor only. Legacy private Flash/serial scripts do not automatically participate.
 Latest 13-action/v7 source is absent here; do not overwrite or infer it from the handoff package.
 
+## GrokBot microSD provisioning
+
+With user authorization, verify the reader's drive letter and volume identity, the target GrokBot's device identity and firmware compatibility, and the integrity of a complete backup of the card's existing `/grokbot` directory before writing.
+Validate each package's format and SHA-256. On the verified card, create only absent `/grokbot/tnt/show.gtn` and `/grokbot/totem/totem.gra` files and their required parent directories. Stop if a target file already exists. Do not overwrite or delete files, format the card, or modify unrelated content.
+Verify the written files by reading them back and comparing their SHA-256 hashes. Verify SD loading separately on the target device after reinserting the card.
 
 ## Project
 

@@ -19,6 +19,10 @@ set(SOURCES "audio/audio_codec.cc"
             "display/text_glyph.cc"
             "display/lcd_display.cc"
             "display/pet_display.cc"
+            "display/pet_tnt.cc"
+            "display/pet_tnt_audio.cc"
+            "display/pet_totem.cc"
+            "display/pet_totem_audio.cc"
             "display/pet_imu.c"
             "display/pet_rtc.c"
             "display/oled_display.cc"
@@ -1123,6 +1127,10 @@ if(CONFIG_BOARD_TYPE_ESP32_P4_FUNCTION_EV_BOARD)
         sdmmc
     )
 endif()
+if(CONFIG_BOARD_TYPE_WAVESHARE_ESP32_S3_TOUCH_AMOLED_2_06
+   AND NOT CONFIG_WAVESHARE_WHALE_VALIDATION)
+    list(APPEND MAIN_PRIV_REQUIRES_EXTRA esp_driver_sdspi sdmmc)
+endif()
 idf_component_register(SRCS ${SOURCES}
                     EMBED_FILES ${LANG_SOUNDS} ${COMMON_SOUNDS}
                     INCLUDE_DIRS ${INCLUDE_DIRS}
@@ -1152,6 +1160,28 @@ idf_component_register(SRCS ${SOURCES}
                         xiaozhi-fonts
                         ${MAIN_PRIV_REQUIRES_EXTRA}
                     )
+
+if(CONFIG_BOARD_TYPE_WAVESHARE_ESP32_S3_TOUCH_AMOLED_2_06
+   AND NOT CONFIG_WAVESHARE_WHALE_VALIDATION)
+    target_sources(${COMPONENT_LIB} PRIVATE "display/pet_controls.cc")
+    target_compile_definitions(${COMPONENT_LIB} PRIVATE GROK_CONTROLS=1)
+    set(GROK_MEME_BANK "${PROJECT_DIR}/local-only/grok_meme_bank.bin")
+    if(EXISTS "${GROK_MEME_BANK}")
+        target_add_binary_data(${COMPONENT_LIB} "${GROK_MEME_BANK}" BINARY)
+        target_compile_definitions(${COMPONENT_LIB} PRIVATE GROK_MEME_SOUNDS=1)
+    endif()
+    set(GROK_FIREWORKS_FALLBACK "${PROJECT_DIR}/local-only/grok_fireworks_fallback.gra")
+    if(NOT EXISTS "${GROK_FIREWORKS_FALLBACK}")
+        set(GROK_FIREWORKS_FALLBACK "${PROJECT_DIR}/assets/grokbot/grok_fireworks_fallback.gra")
+    endif()
+    if(EXISTS "${GROK_FIREWORKS_FALLBACK}")
+        target_add_binary_data(${COMPONENT_LIB} "${GROK_FIREWORKS_FALLBACK}" BINARY)
+        target_sources(${COMPONENT_LIB} PRIVATE "display/pet_fireworks.cc"
+            "display/pet_fireworks_camera.cc" "display/pet_media.cc"
+            "display/pet_face_profile.cc")
+        target_compile_definitions(${COMPONENT_LIB} PRIVATE GROK_FIREWORKS=1)
+    endif()
+endif()
 
 # Keep project-owned C++ on GNU C++23. ESP-IDF 6 may default to a newer
 # dialect; pin the baseline so main/ does not depend on it.

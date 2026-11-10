@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "creeper": 10,
+  "star": 14,
+  "sphere": 14,
+  "burst": 14,
+  "lan": 10,
+  "willow": 14,
+  "nessie": 10,
+  "snowflake": 14,
+  "test_effect": "random"
+}

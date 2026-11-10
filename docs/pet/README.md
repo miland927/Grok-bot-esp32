@@ -25,6 +25,10 @@ ES8311+ES7210 音频、AXP2101 电源、QMI8658 IMU、PCF85063 RTC、32MB Flash 
 | 摸它 | 看向手指、压扁、跳一下、眯眼 |
 | 双击 | 眼睛绕圈转（晕） |
 | 长按 | 眯眼“享受” |
+| 向下拖 ≥55 px | 烟花庆祝 |
+| 快速五连点 | TNT 蓄力爆炸 |
+| 向上拖 ≥55 px | 不死图腾复活（3.5 s） |
+| 从脸画布长按 ≥1.8 s 后五连点 | 下一次 TNT 接不死图腾（6.6 s） |
 | 拿起 / 摇晃 | 惊讶 / 眩晕 |
 | 倾斜 | 视线跟重力偏 |
 | 离开 2 分钟 | 打瞌睡（呼吸减半、眼睛半闭） |
@@ -143,3 +147,41 @@ OTA 只写备用槽（`ota_1` @0x410000），失败会自动回退，不会砖�
 - **不用 GIF/EAF 播素材**：程序化渲染不占资源分区，且能做实时反应
 - **不混音做音效**：会污染 AEC 参考信号，一个 30ms 的提示音不值得冒这个险
 - **表情优先级写死成阶梯**：比散落的 `if` 可预测，新增行为只需插一层
+
+## PWR 短按音效
+
+在 GrokBot 仓库根目录执行，参数指向解压后的音效包清单。
+
+```powershell
+python scripts/pet/pack_meme_sounds.py <解压目录>/manifest.json
+python scripts/build.py waveshare/esp32-s3-touch-amoled-2.06 --name esp32-s3-touch-amoled-2.06
+```
+
+打包器从清单的短音效池选取素材，生成 `local-only/grok_meme_bank.bin`。
+普通 GrokBot 变体在构建时将本机音效包嵌入应用镜像。
+板子已启动后，PWR 短按随机播放一条本地音效，对话中或已有音频在播放时跳过。
+PWR 长按仍由电源芯片处理。实机验收覆盖断网冷启动、短按、连按、长按关机及重新联网后的语音。
+
+素材和生成的音效包保存在本机。构建机上没有音效包时，仍可构建原有的 GrokBot 固件。
+
+## 下拽烟花
+
+从 Grok 的脸上向下拖至少 55 像素后松手。完整效果由 microSD 提供，固件保留一套带音效的苦力怕备用烟花。飞行段现在按 v2 追视镜头在运行时绘制，爆炸段继续播放 GRA1 素材；时间轴、镜头模块、素材生成与验证命令见 [烟花追视镜头](FIREWORKS.md)。下拉时的脸形约束与回场弹跳见 [下拉脸形与回场弹跳](FACE-MOTION.md)。
+
+```powershell
+python scripts/pet/pack_sd_fireworks.py <预览素材目录> local-only --fallback-only
+python scripts/build.py waveshare/esp32-s3-touch-amoled-2.06 --name esp32-s3-touch-amoled-2.06
+```
+
+卡上目录、电脑打包命令与回退行为见 [microSD 资源库](MICROSD.md)。
+
+## 不死图腾与 TNT 联动
+
+从 Grok 的脸上向上拖至少 55 像素后松手，播放 3.5 s 复活演出。TNT 隐藏彩蛋：从脸画布开始、保持按住且在 20 px 内长按 ≥1.8 s 武装，再做五连点；TNT 播到约 3.10 s 切黑，0.4 s 后显出图腾，整段 6.6 s。武装只对下一次 TNT 生效，屏幕空白、拖动和 `PRESS_LOST` 都不会武装。
+
+联动接缝：TNT 音轨在 3.00 s 截止，图腾音轨在 3.10 s 从死亡段开始，局部 1.86 s 爆发对应联动 4.96 s。若 TNT 尾音仍占队列，图腾后台最多等 0.45 s，并按启动延迟跳过音轨开头以保持爆发点；超出同步窗口时明确静音回退并记日志。分镜、参数、素材来源与生成/验证命令见 [不死图腾复活](TOTEM.md)，TNT 细节见 [TNT 电影演出](TNT.md)。
+
+```powershell
+python scripts/pet/make_totem_sound.py
+python scripts/pet/pack_totem_pack.py
+```

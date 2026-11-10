@@ -1,7 +1,18 @@
 #include "pet_display.h"
+#ifdef GROK_CONTROLS
+#include "pet_controls.h"
+#include <utility>
+#endif
+#ifdef GROK_FIREWORKS
+#include "pet_fireworks.h"
+#include "pet_media.h"
+#endif
 #include "lvgl_theme.h"
+#include "pet_face_geometry.h"
+#include "pet_face_motion.h"
 #include "pet_imu.h"
 #include "pet_rtc.h"
+#include "pet_show_state.h"
 #include "audio/input_level.h"
 #include "board.h"
 #include "application.h"
@@ -25,6 +36,16 @@ static const char* TAG = "PetDisplay";
 
 #define PET_W 240
 #define PET_H 240
+
+static constexpr int kTntTapSlopPx = 26;
+static constexpr int64_t kTntTapHoldUs = 320000;
+static constexpr int kTotemArmSlopPx = 20;
+
+static bool WithinPressSlop(lv_point_t origin, lv_point_t point, int slop) {
+    const int dx = point.x - origin.x;
+    const int dy = point.y - origin.y;
+    return dx * dx + dy * dy <= slop * slop;
+}
 
 static uint16_t g_lut[65];
 
@@ -103,32 +124,35 @@ PetDisplay::PetDisplay(esp_lcd_panel_io_handle_t panel_io, esp_lcd_panel_handle_
                     swap_xy) {}
 
 PetDisplay::~PetDisplay() {
+#ifdef GROK_FIREWORKS
+    fireworks_.reset();
+#endif
     if (timer_) {
         lv_timer_delete(timer_);
         timer_ = nullptr;
     }
+#ifdef GROK_CONTROLS
+    controls_.reset();
+#endif
     if (fb_) {
         heap_caps_free(fb_);
         fb_ = nullptr;
     }
 }
 
-static void Rgb565FromLv(lv_color_t c, uint16_t* out) {
-    *out = (uint16_t)((c.red >> 3) << 11 | (c.green >> 2) << 5 | (c.blue >> 3));
-}
-
 void PetDisplay::SyncColors() {
     lv_color_t bg = lv_obj_get_style_bg_color(lv_screen_active(), LV_PART_MAIN);
     int lum = (bg.red * 30 + bg.green * 59 + bg.blue * 11) / 100;
+    const uint16_t previous_face = face_;
     if (lum < 128) {
         bg_ = ((bg.red >> 3) << 11) | ((bg.green >> 2) << 5) | (bg.blue >> 3);
-        face_ = 0xF7BE;
+        face_ = profile_.color_dark;
     } else {
         bg_ = ((bg.red >> 3) << 11) | ((bg.green >> 2) << 5) | (bg.blue >> 3);
-        face_ = 0x1082;
+        face_ = profile_.color_light;
     }
     uint32_t packed = ((uint32_t)bg.red << 16) | ((uint32_t)bg.green << 8) | bg.blue;
-    if (packed != last_bg_) {
+    if (packed != last_bg_ || face_ != previous_face) {
         last_bg_ = packed;
         BuildLut(bg_, face_);
         ESP_LOGI(TAG, "bg %04x face %04x", bg_, face_);
@@ -140,9 +164,20 @@ void PetDisplay::SyncColors() {
             dirty_y0_ = -1;
             dirty_x1_ = -1;
             dirty_y1_ = -1;
+            lv_obj_invalidate(canvas_);
         }
     }
 }
+
+#ifdef GROK_CONTROLS
+void PetDisplay::SetWifiSetupHandler(std::function<void()> handler) {
+    DisplayLockGuard lock(this);
+    wifi_setup_handler_ = std::move(handler);
+    if (controls_) {
+        controls_->SetWifiSetup(wifi_setup_handler_);
+    }
+}
+#endif
 
 void PetDisplay::SetupUI() {
     SpiLcdDisplay::SetupUI();
@@ -184,6 +219,32 @@ void PetDisplay::SetupUI() {
     lv_obj_clear_flag(canvas_, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_add_flag(canvas_, LV_OBJ_FLAG_CLICKABLE);
     lv_obj_move_foreground(canvas_);
+#ifdef GROK_FIREWORKS
+    lv_obj_add_flag(canvas_, LV_OBJ_FLAG_PRESS_LOCK);
+    fireworks_ = std::make_unique<PetFireworks>();
+#endif
+
+#ifdef GROK_CONTROLS
+    controls_ = std::make_unique<PetControls>(
+        lv_screen_active(),
+        [this]() {
+            if (tnt_.IsActive() || totem_.IsActive()) {
+                return false;
+            }
+#ifdef GROK_FIREWORKS
+            if (fireworks_ && fireworks_->IsActive()) {
+                return false;
+            }
+#endif
+            return true;
+        },
+        [this]() {
+            tnt_.CancelTaps();
+            last_click_ = 0;
+            last_touch_ = esp_timer_get_time();
+        });
+    controls_->SetWifiSetup(wifi_setup_handler_);
+#endif
 
     static const lv_event_code_t kCodes[] = {LV_EVENT_PRESSED, LV_EVENT_PRESSING,
                                              LV_EVENT_RELEASED, LV_EVENT_PRESS_LOST};
@@ -348,11 +409,38 @@ void PetDisplay::HandlePoke(lv_point_t pt) {
     }
 }
 
+#ifdef GROK_FIREWORKS
+bool PetDisplay::IsFireworkDrag(lv_point_t point) const {
+    const int dx = point.x - press_origin_.x;
+    const int dy = point.y - press_origin_.y;
+    return firework_drag_ && dy >= 55 && dy >= 1.35f * fabsf(dx);
+}
+#endif
+
+bool PetDisplay::IsReviveDrag(lv_point_t point) const {
+    if (!totem_drag_) {
+        return false;
+    }
+    const int dx = point.x - press_origin_.x;
+    const int dy = point.y - press_origin_.y;
+    return dy <= -55 && -dy >= 1.35f * fabsf(dx);
+}
+
 void PetDisplay::ScreenEventCb(lv_event_t* e) {
     auto* self = static_cast<PetDisplay*>(lv_event_get_user_data(e));
-    if (!self) {
+    if (!self || self->tnt_.IsActive() || self->totem_.IsActive()) {
         return;
     }
+#ifdef GROK_FIREWORKS
+    if (self->fireworks_ && self->fireworks_->IsActive()) {
+        return;
+    }
+#endif
+#ifdef GROK_CONTROLS
+    if (self->controls_ && self->controls_->IsOpen()) {
+        return;
+    }
+#endif
     lv_event_code_t code = lv_event_get_code(e);
     lv_indev_t* indev = lv_indev_active();
     lv_point_t p = {0, 0};
@@ -366,7 +454,20 @@ void PetDisplay::ScreenEventCb(lv_event_t* e) {
         self->long_handled_ = false;
         self->press_start_ = now;
         self->press_pt_ = p;
-        self->squash_v_ -= 1.0f;
+        self->press_origin_ = p;
+        self->tnt_tap_eligible_ = indev && lv_event_get_target(e) == self->canvas_;
+        self->totem_drag_ = self->tnt_tap_eligible_;
+        self->arm_candidate_ = self->tnt_tap_eligible_ &&
+                               CanRunPetShow(Application::GetInstance().GetDeviceState());
+        self->arm_handled_ = false;
+        self->arm_armed_this_press_ = false;
+        if (!self->tnt_tap_eligible_) {
+            self->tnt_.CancelTaps();
+        }
+#ifdef GROK_FIREWORKS
+        self->firework_drag_ = self->tnt_tap_eligible_;
+#endif
+        self->squash_v_ -= 2.5f;
         self->last_touch_ = now;
         if (self->drowsy_) {
             self->drowsy_ = false;
@@ -382,6 +483,19 @@ void PetDisplay::ScreenEventCb(lv_event_t* e) {
     if (code == LV_EVENT_PRESSING) {
         if (self->pressed_) {
             self->press_pt_ = p;
+            if (self->tnt_tap_eligible_ &&
+                (!indev || !WithinPressSlop(self->press_origin_, p, kTntTapSlopPx))) {
+                self->tnt_tap_eligible_ = false;
+                self->tnt_.CancelTaps();
+            }
+            if (self->arm_candidate_ &&
+                (!indev || !WithinPressSlop(self->press_origin_, p, kTotemArmSlopPx))) {
+                self->arm_candidate_ = false;
+                if (self->arm_armed_this_press_) {
+                    self->totem_armed_ = false;
+                    self->arm_armed_this_press_ = false;
+                }
+            }
         }
         return;
     }
@@ -392,6 +506,44 @@ void PetDisplay::ScreenEventCb(lv_event_t* e) {
         }
         self->pressed_ = false;
         int64_t held = now - self->press_start_;
+        const bool can_run_show = CanRunPetShow(Application::GetInstance().GetDeviceState());
+        const bool tnt_tap = code == LV_EVENT_RELEASED && self->tnt_tap_eligible_ && indev &&
+                             !self->long_handled_ && held <= kTntTapHoldUs &&
+                             WithinPressSlop(self->press_origin_, p, kTntTapSlopPx) &&
+                             can_run_show;
+        self->tnt_tap_eligible_ = false;
+        if (!tnt_tap) {
+            self->tnt_.CancelTaps();
+        }
+#ifdef GROK_FIREWORKS
+        const bool launch = code == LV_EVENT_RELEASED && !self->long_handled_ &&
+                            self->IsFireworkDrag(indev ? p : self->press_pt_);
+        self->firework_drag_ = false;
+        if (launch) {
+            self->tnt_.CancelTaps();
+            if (self->fireworks_ && self->fireworks_->Start(self->canvas_, now)) {
+                self->poke_until_ = 0;
+                self->last_click_ = 0;
+                self->hop_v_ = -250.0f;
+                self->squash_v_ = 2.6f;
+            }
+            return;
+        }
+#endif
+
+        const bool launch_totem = code == LV_EVENT_RELEASED && !self->long_handled_ &&
+                                  self->IsReviveDrag(p);
+        if (code == LV_EVENT_PRESS_LOST && self->arm_armed_this_press_) {
+            self->totem_armed_ = false;
+        }
+        self->arm_candidate_ = false;
+        self->arm_armed_this_press_ = false;
+        self->totem_drag_ = false;
+        if (launch_totem) {
+            self->tnt_.CancelTaps();
+            self->StartTotem(now, false);
+            return;
+        }
 
         if (self->long_handled_) {
             self->mood_ = PetDisplay::kNeutral;
@@ -402,6 +554,41 @@ void PetDisplay::ScreenEventCb(lv_event_t* e) {
         if (code != LV_EVENT_RELEASED || held >= 700000) {
             return;
         }
+
+        if (tnt_tap && self->tnt_.Tap(now)) {
+            ESP_LOGI(TAG, "TNT show started");
+            if (self->totem_armed_) {
+                self->totem_after_tnt_ = true;
+                self->totem_armed_ = false;
+                ESP_LOGI(TAG, "totem aftermath queued for this TNT");
+            }
+#ifdef GROK_FIREWORKS
+            if (self->tnt_request_ && self->tnt_request_->done.load(std::memory_order_acquire)) {
+                self->UpdateTntPack(now);
+            }
+            self->tnt_audio_.Start(self->tnt_.ShowId(), now, self->tnt_clip_,
+                                   self->totem_after_tnt_ ? 3000 : 0);
+#else
+            self->tnt_audio_.Start(self->tnt_.ShowId(), now, {},
+                                   self->totem_after_tnt_ ? 3000 : 0);
+#endif
+            self->last_click_ = self->poke_until_ = 0;
+            self->spin_ = self->spin_v_ = 0;
+            self->hop_ = self->hop_v_ = self->squash_ = self->squash_v_ = 0;
+            self->blinking_ = false;
+            self->blink_ = 1.0f;
+            self->mood_ = kNeutral;
+            self->mood_until_ = 0;
+            return;
+        }
+
+#ifdef GROK_FIREWORKS
+        // Prepare the card override without delaying the fifth tap or the soundtrack.
+        if (tnt_tap && self->tnt_.PendingTaps() >= 3 &&
+            !self->tnt_clip_ && !self->tnt_request_) {
+            self->tnt_request_ = PetMedia::LoadTnt();
+        }
+#endif
 
         bool dbl = (now - self->last_click_) < 350000;
         self->last_click_ = now;
@@ -423,13 +610,205 @@ void PetDisplay::TickThunk(lv_timer_t* timer) {
     }
 }
 
+void PetDisplay::StartTotem(int64_t now, bool aftermath) {
+    if (totem_.IsActive() || !CanRunPetShow(Application::GetInstance().GetDeviceState())) {
+        return;
+    }
+    totem_.Start(now, aftermath);
+    TotemAudioSource source;
+#ifdef GROK_FIREWORKS
+    if (totem_pack_ && totem_pack_->HasAudio()) {
+        source.ogg = totem_pack_->Audio();
+        source.keepalive = totem_pack_;
+    }
+#endif
+    // The linked entry waits through the black hold for the TNT tail and
+    // starts with a sample offset; the standalone entry starts immediately.
+    totem_audio_.Start(totem_.ShowId(), now, source, aftermath);
+    poke_until_ = look_until_ = 0;
+    mood_ = kNeutral;
+    mood_until_ = 0;
+    hop_ = hop_v_ = squash_ = squash_v_ = 0.0f;
+    spin_ = spin_v_ = 0.0f;
+    eye_ = 1.0f;
+    eye_v_ = 0.0f;
+    eye_hop_ = eye_hop_v_ = 0.0f;
+    gx_ = gy_ = gvx_ = gvy_ = 0.0f;
+    blink_ = 1.0f;
+    blinking_ = false;
+    double_blink_ = false;
+    last_touch_ = now;
+    ESP_LOGI(TAG, "totem start aftermath=%d", static_cast<int>(aftermath));
+}
+
+#ifdef GROK_FIREWORKS
+void PetDisplay::UpdateFaceProfile(int64_t now) {
+    if (pressed_ || tnt_.IsActive() || totem_.IsActive() ||
+        (fireworks_ && fireworks_->IsActive())) {
+        return;
+    }
+    if (face_request_ && face_request_->done.load(std::memory_order_acquire)) {
+        profile_ = face_request_->profile;
+        ESP_LOGI(TAG, "Face profile: %s", face_request_->valid ? "microSD" : "defaults");
+        face_request_.reset();
+        SyncColors();
+    }
+    if (!face_request_ && now >= next_face_load_ && face_reload_queued_.exchange(false)) {
+        face_request_ = PetMedia::LoadFaceProfile();
+        if (!face_request_) {
+            face_reload_queued_.store(true);
+            next_face_load_ = now + 250000;
+        }
+    }
+}
+
+void PetDisplay::UpdateTotemPack(int64_t now) {
+    // Let the face-profile read and the boot UI settle before taking the
+    // shared SD worker; a pull-down in the first seconds keeps its old path.
+    if (now < 5000000) {
+        return;
+    }
+    if (totem_.IsActive() || tnt_.IsActive() || (fireworks_ && fireworks_->IsActive())) {
+        return;
+    }
+    if (totem_request_ && totem_request_->done.load(std::memory_order_acquire)) {
+        totem_pack_ = totem_request_->pack;
+        if (totem_pack_) {
+            const auto texture = totem_pack_->Texture();
+            totem_.SetTexture(&texture);
+        } else {
+            totem_.SetTexture(nullptr);
+        }
+        ESP_LOGI(TAG, "Totem pack: %s", totem_pack_ ? "microSD" : "built-in");
+        totem_request_.reset();
+        return;
+    }
+    if (!totem_pack_ && !totem_request_ && totem_load_attempts_ < 6 &&
+        now >= next_totem_load_) {
+        totem_request_ = PetMedia::LoadTotem();
+        ++totem_load_attempts_;
+        if (!totem_request_) {
+            next_totem_load_ = now + 500000;
+        }
+    }
+}
+
+void PetDisplay::UpdateTntPack(int64_t now) {
+    if (tnt_request_ && tnt_request_->done.load(std::memory_order_acquire)) {
+        tnt_clip_ = std::move(tnt_request_->clip);
+        tnt_request_.reset();
+        next_tnt_preload_ = 0;
+        return;
+    }
+    // Warm the small PSRAM clip after boot. If the SD worker is occupied,
+    // retry the preload later; a missing pack can still be retried on taps.
+    if (next_tnt_preload_ && now >= next_tnt_preload_ && !pressed_ &&
+        !tnt_request_ && !tnt_clip_) {
+        tnt_request_ = PetMedia::LoadTnt();
+        next_tnt_preload_ = tnt_request_ ? 0 : now + 250000;
+    }
+}
+#endif
+
 void PetDisplay::Tick() {
     int64_t now = esp_timer_get_time();
     static int64_t last = now;
     float dt = (now - last) / 1e6f;
     last = now;
-    if (dt > 0.1f) dt = 0.1f;
+    if (dt > 0.05f) dt = 0.05f;
     if (dt <= 0.0f) dt = 0.033f;
+
+#ifdef GROK_FIREWORKS
+    UpdateFaceProfile(now);
+    const auto firework_stage = fireworks_ ? fireworks_->Update(now) : PetFireworks::Stage::Idle;
+    if (firework_stage == PetFireworks::Stage::Flight ||
+        firework_stage == PetFireworks::Stage::Burst) {
+#ifdef GROK_CONTROLS
+        if (controls_) {
+            controls_->Hide();
+        }
+#endif
+        return;
+    }
+    const bool returning = firework_stage == PetFireworks::Stage::Return;
+    if (returning && !firework_returning_) {
+        // Keep the face's return entrance brief, then let one upward impulse
+        // carry it past the rest position before the stage ends.
+        hop_ = 0.0f;
+        hop_v_ = -300.0f;
+        squash_ = squash_v_ = 0.0f;
+        blink_next_ = now + 230000;
+        if (fireworks_->IsCreeper()) {
+            mood_ = kSurprised;
+            mood_until_ = now + 360000;
+            look_x_ = 0.60f;
+            look_y_ = -0.38f;
+            look_until_ = now + 560000;
+        }
+    }
+    firework_returning_ = returning;
+#endif
+
+#ifdef GROK_FIREWORKS
+    UpdateTotemPack(now);
+    if (!tnt_.IsActive() && !totem_.IsActive() && !returning) {
+        UpdateTntPack(now);
+    }
+#endif
+
+    const bool can_run_show = CanRunPetShow(Application::GetInstance().GetDeviceState());
+    const bool was_tnt = tnt_.IsActive();
+    auto tnt_stage = tnt_.Update(now, can_run_show);
+    if (was_tnt && tnt_stage == PetTnt::Stage::Recover && totem_after_tnt_) {
+        totem_after_tnt_ = false;
+        tnt_.Abort();
+        tnt_audio_.Cancel();
+        StartTotem(now, true);
+        tnt_stage = PetTnt::Stage::Idle;
+    }
+    if (was_tnt && tnt_stage == PetTnt::Stage::Idle) {
+        totem_after_tnt_ = false;
+        tnt_audio_.Cancel();
+    }
+
+    const bool was_totem = totem_.IsActive();
+    const auto totem_stage = totem_.Update(now, can_run_show);
+    if (totem_stage != PetTotem::Stage::Idle) {
+#ifdef GROK_CONTROLS
+        if (controls_) {
+            controls_->Hide();
+        }
+#endif
+        const float progress = totem_.Progress(now);
+        const auto pose = PetTotem::Sample(totem_stage, progress, totem_.Aftermath());
+        t_ += dt;
+        breath_ += dt * ((drowsy_ || low_batt_ || night_) ? 0.8f : 1.15f);
+        Render(1.0f, tnt_stage, 0.0f, &pose, totem_stage, progress);
+        return;
+    }
+    if (was_totem) {
+        totem_audio_.Cancel();
+        blinking_ = false;
+        blink_ = 1.0f;
+        blink_next_ = now + 300000;
+        t_ += dt;
+        breath_ += dt * ((drowsy_ || low_batt_ || night_) ? 0.8f : 1.15f);
+    }
+
+    if (tnt_stage != PetTnt::Stage::Idle) {
+#ifdef GROK_CONTROLS
+        if (controls_) {
+            controls_->Hide();
+        }
+#endif
+        Render(1.0f, tnt_stage, tnt_.Progress(now));
+        return;
+    }
+    if (was_tnt) {
+        blinking_ = false;
+        blink_ = 1.0f;
+        blink_next_ = now + 300000;
+    }
 
     if (mood_until_ && now > mood_until_) {
         mood_ = kNeutral;
@@ -558,11 +937,23 @@ void PetDisplay::Tick() {
     /* gestures: hold to pet, drag to lead the gaze */
     if (pressed_) {
         int64_t held = now - press_start_;
-        if (held > 700000 && !long_handled_) {
+#ifdef GROK_FIREWORKS
+        const bool dragging_firework = IsFireworkDrag(press_pt_);
+#else
+        constexpr bool dragging_firework = false;
+#endif
+        const bool dragging_totem = IsReviveDrag(press_pt_);
+        if (held > 700000 && !long_handled_ && !dragging_firework && !dragging_totem) {
             long_handled_ = true;
             mood_ = kSleepy;
             mood_until_ = 0;
             ESP_LOGI(TAG, "long press -> sleepy");
+        }
+        if (held > 1800000 && arm_candidate_ && !arm_handled_ && can_run_show) {
+            arm_handled_ = true;
+            totem_armed_ = true;
+            arm_armed_this_press_ = true;
+            ESP_LOGI(TAG, "totem armed for next TNT");
         }
         if (held > 200000) {
             lv_area_t a;
@@ -594,17 +985,17 @@ void PetDisplay::Tick() {
         int level = -1;
         bool chg = false;
         bool dis = false;
-        if (Board::GetInstance().GetBatteryLevel(level, chg, dis)) {
-            if (level > 0 && level <= 100) {
-                battery_level_ = level;
-            }
-            charging_ = chg;
-            bool low = (battery_level_ > 0 && battery_level_ < 20 && !chg);
-            if (low != low_batt_) {
-                low_batt_ = low;
-                ESP_LOGI(TAG, "battery %d%% charging=%d low=%d", battery_level_, (int)chg,
-                         (int)low);
-            }
+        const bool available = Board::GetInstance().GetBatteryLevel(level, chg, dis);
+        battery_level_ = available && level >= 0 && level <= 100 ? level : -1;
+        charging_ = available && chg;
+#ifdef GROK_CONTROLS
+        discharging_ = available && dis;
+#endif
+        const bool low = battery_level_ > 0 && battery_level_ < 20 && !charging_;
+        if (low != low_batt_) {
+            low_batt_ = low;
+            ESP_LOGI(TAG, "battery %d%% charging=%d low=%d", battery_level_, (int)charging_,
+                     (int)low);
         }
         if (now - last_batt_log_ > 60000000) {
             last_batt_log_ = now;
@@ -734,7 +1125,7 @@ void PetDisplay::Tick() {
             tx = -0.25f; ty = 0.45f; eye_target = 0.85f;
             break;
         case kAngry:
-            tx = 0.0f; ty = 0.0f; eye_target = 0.55f;
+            tx = 0.0f; ty = 0.0f; eye_target = profile_.angry_eye_scale;
             break;
         case kSurprised:
             tx = 0.0f; ty = -0.1f; eye_target = 1.35f;
@@ -817,12 +1208,33 @@ void PetDisplay::Tick() {
         ty = cosf(t_ * 6.0f) * 0.9f;
         eye_target = 0.50f;
     }
+#ifdef GROK_FIREWORKS
+    if (firework_stage == PetFireworks::Stage::LeadIn) {
+        tx = 0.0f;
+        ty = -0.92f;
+        eye_target = 1.2f;
+    }
+    float pull = 0.0f;
+    if (pressed_ && firework_drag_ && !long_handled_) {
+        const float dx = fabsf(press_pt_.x - press_origin_.x);
+        const float dy = press_pt_.y - press_origin_.y;
+        pull = Clampf((dy - fmaxf(8.0f, 1.35f * dx)) / 108.0f, 0.0f, 1.0f);
+    }
+#else
+    constexpr float pull = 0.0f;
+#endif
     Spring(&gx_, &gvx_, Clampf(tx, -1.0f, 1.0f), dt, 42.0f, 9.5f);
     Spring(&gy_, &gvy_, Clampf(ty, -1.0f, 1.0f), dt, 42.0f, 9.5f);
-    Spring(&squash_, &squash_v_, 0.0f, dt, 95.0f, 7.5f);
-    Spring(&hop_, &hop_v_, 0.0f, dt, 60.0f, 8.5f);
+    Spring(&squash_, &squash_v_, -0.30f * pull, dt, pet_face::kSquashStiffness,
+           pet_face::kSquashDamping);
+    Spring(&hop_, &hop_v_, 16.0f * pull, dt, 60.0f, 8.5f);
     if (hop_ < -36.0f) hop_ = -36.0f;
     if (hop_ > 36.0f) hop_ = 36.0f;
+    Spring(&eye_hop_, &eye_hop_v_, hop_, dt, pet_face::kEyeLagStiffness, pet_face::kEyeLagDamping);
+    if (eye_hop_ < -36.0f)
+        eye_hop_ = -36.0f;
+    if (eye_hop_ > 36.0f)
+        eye_hop_ = 36.0f;
     Spring(&eye_, &eye_v_, eye_target, dt, 120.0f, 14.0f);
     if (eye_ < 0.3f) eye_ = 0.3f;
     if (eye_ > 1.6f) eye_ = 1.6f;
@@ -832,7 +1244,7 @@ void PetDisplay::Tick() {
         blink_start_ = now;
     }
     if (blinking_) {
-        float k = (float)(now - blink_start_) / 140000.0f;
+        float k = (float)(now - blink_start_) / static_cast<float>(profile_.blink_duration_us);
         if (k >= 1.0f) {
             blinking_ = false;
             blink_ = 1.0f;
@@ -840,15 +1252,33 @@ void PetDisplay::Tick() {
                 double_blink_ = false;
                 blink_next_ = now + 200000;
             } else {
-                blink_next_ = now + (int64_t)(1500000 + (esp_random() % 3500000));
+                const uint32_t range = profile_.blink_max_us - profile_.blink_min_us;
+                blink_next_ = now + profile_.blink_min_us + (range ? esp_random() % range : 0);
             }
         } else {
             blink_ = 1.0f - (1.0f - fabsf(1.0f - 2.0f * k)) * 0.96f;
         }
     }
 
+#ifdef GROK_CONTROLS
+    if (controls_) {
+        controls_->Update(now, battery_level_, charging_, discharging_);
+        if (controls_->CoversFace()) {
+            return;
+        }
+    }
+#endif
+
     int64_t render_start = esp_timer_get_time();
+#ifdef GROK_FIREWORKS
+    const float entrance = returning ? fireworks_->ReturnProgress(now) : 1.0f;
+    Render(entrance);
+    if (returning) {
+        lv_obj_remove_flag(canvas_, LV_OBJ_FLAG_HIDDEN);
+    }
+#else
     Render();
+#endif
     static int64_t render_acc = 0;
     static int render_n = 0;
     static int64_t last_render_log = 0;
@@ -860,33 +1290,64 @@ void PetDisplay::Tick() {
         render_acc = 0;
         render_n = 0;
     }
-    if (canvas_) {
-        lv_obj_invalidate(canvas_);
-    }
 }
 
-void PetDisplay::Render() {
+void PetDisplay::Render(float entrance, PetTnt::Stage tnt_stage, float tnt_progress,
+                        const PetTotem::Pose* totem, PetTotem::Stage totem_stage,
+                        float totem_progress) {
     if (!fb_) {
         return;
     }
 
-    const int cx = PET_W / 2;
-    const int cy = PET_H / 2 + (int)hop_;
-    const float R = 88.0f * (1.0f + 0.018f * sinf(breath_));
-    const float sq = Clampf(squash_, -0.48f, 0.48f);
-    const float rx = R * (1.0f + sq);
-    const float ry = R * (1.0f - sq);
-    const float es = eye_;
+    const bool totem_mode = totem != nullptr;
+    const PetTotem::Pose tp = totem_mode ? *totem : PetTotem::Pose{};
+    const float cam = totem_mode ? tp.zoom : 1.0f;
+    const auto tnt_pose = PetTnt::Sample(tnt_stage, tnt_progress);
 
-    const float eye_dx = 0.34f * rx;
-    const float eye_rx = 0.135f * rx * es;
-    const float eye_ry = 0.165f * ry * blink_ * es;
-    const float base_y = cy - 0.04f * ry + gy_ * 0.10f * ry;
-    const float spin_c = cosf(spin_);
-    const float spin_s = sinf(spin_);
-    const float ex0 = cx - eye_dx * spin_c + gx_ * 0.34f * rx;
+    int cx = PET_W / 2 + static_cast<int>(roundf(tnt_pose.x));
+    if (!totem_mode && mood_ == kAngry && profile_.angry_shake_px > 0.0f) {
+        constexpr float kTau = 6.283185307f;
+        cx += static_cast<int>(roundf(profile_.angry_shake_px *
+                                      sinf(t_ * profile_.angry_shake_hz * kTau)));
+    }
+    if (totem_mode) {
+        cx += static_cast<int>(roundf(tp.shake_x + tp.face_x * cam));
+    }
+    const float remaining = 1.0f - entrance;
+    const float settle = remaining * remaining * remaining;
+    const int cy = totem_mode
+                       ? PET_H / 2 + static_cast<int>(roundf(tp.face_y * cam + tp.shake_y))
+                       : PET_H / 2 + static_cast<int>(hop_ + 65.0f * settle + tnt_pose.y);
+    const float R = totem_mode
+                        ? 88.0f * tp.face_scale * cam
+                        : 88.0f * (1.0f + 0.018f * sinf(breath_)) *
+                              (1.0f - 0.60f * settle) * tnt_pose.face_scale;
+    const float sq =
+        Clampf((totem_mode ? tp.face_squash : squash_) + tnt_pose.squash, -0.48f, 0.48f);
+    const float rx = fminf(R * (1.0f + sq), PET_W / 2 - 4.0f);
+    // Constrain the actual shape (including spring overshoot) before the eyes
+    // and dirty bounds are computed. Keep the face center, soften the vertical
+    // stretch, and leave a two-pixel anti-aliasing margin at both edges.
+    float ry = R * (1.0f - sq);
+    ry = pet_face::ConstrainVerticalRadius(static_cast<float>(cy), ry);
+    const float es = totem_mode ? 1.0f : eye_;
+    const float eye_open = totem_mode ? tp.eye_open : blink_;
+
+    const float eye_dx = profile_.eye_spacing * rx;
+    const float eye_rx = profile_.eye_width * rx * es;
+    const float eye_ry = profile_.eye_height * ry * eye_open * es * tnt_pose.eye_height;
+    const float eye_lag = (!totem_mode && tnt_stage == PetTnt::Stage::Idle)
+                              ? Clampf((eye_hop_ - hop_) * pet_face::kEyeLagScale,
+                                       -pet_face::kEyeLagClamp, pet_face::kEyeLagClamp)
+                              : 0.0f;
+    const float gaze_x = totem_mode ? tp.gaze_x : gx_;
+    const float gaze_y = totem_mode ? tp.gaze_y : gy_;
+    const float base_y = cy - 0.04f * ry + gaze_y * profile_.gaze_y * ry + eye_lag;
+    const float spin_c = totem_mode ? 1.0f : cosf(spin_);
+    const float spin_s = totem_mode ? 0.0f : sinf(spin_);
+    const float ex0 = cx - eye_dx * spin_c + gaze_x * profile_.gaze_x * rx;
     const float ey0 = base_y - eye_dx * spin_s;
-    const float ex1 = cx + eye_dx * spin_c + gx_ * 0.34f * rx;
+    const float ex1 = cx + eye_dx * spin_c + gaze_x * profile_.gaze_x * rx;
     const float ey1 = base_y + eye_dx * spin_s;
 
     const float inv_rx = 1.0f / rx;
@@ -896,6 +1357,7 @@ void PetDisplay::Render() {
     const float inv_ery = (eye_ry > 0.01f) ? (1.0f / eye_ry) : 0.0f;
     const float inv_ecover = (eye_rx > 0.01f) ? (eye_rx / 1.2f) : 0.0f;
     const bool eyes = eye_ry > 0.5f;
+    const float face_alpha = totem_mode ? tp.face_alpha : tnt_pose.face_alpha;
 
     int x0 = (int)(cx - rx) - 2, x1 = (int)(cx + rx) + 2;
     int y0 = (int)(cy - ry) - 2, y1 = (int)(cy + ry) + 2;
@@ -905,7 +1367,14 @@ void PetDisplay::Render() {
     if (y1 > PET_H - 1) y1 = PET_H - 1;
 
     /* one pass per affected row: build the line in fast RAM, then blit it */
-    int ux0 = x0, ux1 = x1, uy0 = y0, uy1 = y1;
+    const auto bounds = PetTnt::Bounds(tnt_stage, tnt_pose, PET_W, PET_H);
+    const auto totem_bounds =
+        totem_mode ? PetTotem::Bounds(totem_stage, tp, PET_W, PET_H) : pet_fireworks::Rect{};
+    const auto face_bounds =
+        face_alpha > 0.0f ? pet_fireworks::Rect{x0, y0, x1, y1} : pet_fireworks::Rect{};
+    const auto footprint =
+        pet_fireworks::Union(pet_fireworks::Union(face_bounds, bounds), totem_bounds);
+    int ux0 = footprint.x1, ux1 = footprint.x2, uy0 = footprint.y1, uy1 = footprint.y2;
     if (dirty_x0_ >= 0) {
         if (dirty_x0_ < ux0) ux0 = dirty_x0_;
         if (dirty_x1_ > ux1) ux1 = dirty_x1_;
@@ -933,15 +1402,35 @@ void PetDisplay::Render() {
         ey1hi = (int)(ey1 + my);
     }
 
+    // The totem show always opens on black, even in the light theme, and
+    // darkens the face through its own LUT instead of the theme LUT.
+    uint16_t totem_lut[65];
+    const uint16_t* lut = g_lut;
+    uint16_t clear = bg_;
+    if (totem_mode) {
+        const int fr = (face_ >> 11) & 0x1F;
+        const int fg = (face_ >> 5) & 0x3F;
+        const int fb = face_ & 0x1F;
+        const float dim = 1.0f - Clampf(tp.dark, 0.0f, 1.0f);
+        for (int i = 0; i <= 64; ++i) {
+            const float k = (i / 64.0f) * dim;
+            const int r = static_cast<int>(std::lround(fr * k));
+            const int g = static_cast<int>(std::lround(fg * k));
+            const int b = static_cast<int>(std::lround(fb * k));
+            totem_lut[i] = static_cast<uint16_t>((r << 11) | (g << 5) | b);
+        }
+        lut = totem_lut;
+        clear = 0;
+    }
 
     uint16_t line[PET_W];
 
     for (int y = uy0; y <= uy1; y++) {
         for (int x = ux0; x <= ux1; x++) {
-            line[x] = bg_;
+            line[x] = clear;
         }
 
-        if (y >= y0 && y <= y1) {
+        if (face_alpha > 0.0f && y >= y0 && y <= y1) {
             float dy = ((float)y - (float)cy) * inv_ry;
             float dy2 = dy * dy;
             float ay0 = ((float)y - ey0) * inv_ery;
@@ -951,9 +1440,10 @@ void PetDisplay::Render() {
             const bool row0 = (y >= ey0lo && y <= ey0hi);
             const bool row1 = (y >= ey1lo && y <= ey1hi);
 
+            const float inv_rx_sq = inv_rx * inv_rx;
             for (int x = x0; x <= x1; x++) {
-                float dx = ((float)x - (float)cx) * inv_rx;
-                float d2 = dx * dx + dy2;
+                const int dx = x - cx;
+                float d2 = dx * dx * inv_rx_sq + dy2;
                 if (d2 > 1.05f) {
                     continue;
                 }
@@ -992,23 +1482,39 @@ void PetDisplay::Render() {
                     }
                 }
 
-                float v = a * (1.0f - eye);
+                float v = a * (1.0f - eye) * face_alpha;
                 if (v <= 0.0f) {
                     continue;
                 }
                 int idx = (int)(v * 64.0f);
                 if (idx < 0) idx = 0; else if (idx > 64) idx = 64;
-                line[x] = g_lut[idx];
+                line[x] = lut[idx];
             }
         }
 
         memcpy(&fb_[y * PET_W + ux0], &line[ux0], (ux1 - ux0 + 1) * sizeof(uint16_t));
     }
 
-    dirty_x0_ = ux0;
-    dirty_y0_ = uy0;
-    dirty_x1_ = ux1;
-    dirty_y1_ = uy1;
+    if (!pet_fireworks::Empty(bounds)) {
+        const uint16_t* texture = nullptr;
+#ifdef GROK_FIREWORKS
+        if (tnt_clip_) {
+            texture = tnt_clip_->texture.data();
+        }
+#endif
+        PetTnt::Draw(fb_, PET_W, PET_H, tnt_stage, tnt_progress, tnt_pose, texture);
+    }
+    if (totem_mode) {
+        PetTotem::Draw(fb_, PET_W, PET_H, totem_stage, totem_progress, tp, totem_.Texture());
+    }
+    dirty_x0_ = footprint.x1;
+    dirty_y0_ = footprint.y1;
+    dirty_x1_ = footprint.x2;
+    dirty_y1_ = footprint.y2;
+    lv_area_t coords;
+    lv_obj_get_coords(canvas_, &coords);
+    lv_area_t dirty = {coords.x1 + ux0, coords.y1 + uy0, coords.x1 + ux1, coords.y1 + uy1};
+    lv_obj_invalidate_area(canvas_, &dirty);
 }
 
 

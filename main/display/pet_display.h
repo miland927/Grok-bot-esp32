@@ -1,8 +1,31 @@
-﻿#ifndef PET_DISPLAY_H
+#ifndef PET_DISPLAY_H
 #define PET_DISPLAY_H
 
 #include "lcd_display.h"
+#include "pet_face_profile.h"
+#include "pet_tnt.h"
+#include "pet_tnt_audio.h"
+#include "pet_totem.h"
+#include "pet_totem_audio.h"
 #include "driver/i2c_master.h"
+
+#ifdef GROK_CONTROLS
+#include <functional>
+#include <memory>
+class PetControls;
+#endif
+
+#ifdef GROK_FIREWORKS
+#include <atomic>
+#include <memory>
+namespace PetMedia {
+struct FaceRequest;
+struct TntRequest;
+class TotemPack;
+struct TotemRequest;
+}  // namespace PetMedia
+class PetFireworks;
+#endif
 
 // A procedural face that replaces the emoji/GIF renderer on this board.
 class PetDisplay : public SpiLcdDisplay {
@@ -21,7 +44,14 @@ public:
     void SetPetMood(const char* mood) override;
     void SetPetLook(int x_percent, int y_percent) override;
     std::string GetPetStatus() override;
+#ifdef GROK_CONTROLS
+    void SetWifiSetupHandler(std::function<void()> handler);
+#endif
     void SetSharedI2cBus(i2c_master_bus_handle_t bus) { bus_ = bus; }
+
+#ifdef GROK_FIREWORKS
+    void QueueFaceReload() { face_reload_queued_.store(true); }
+#endif
 
 private:
     enum Mood { kNeutral, kHappy, kSad, kAngry, kSurprised, kThinking, kListening, kSleepy };
@@ -30,7 +60,11 @@ private:
     static void ScreenEventCb(lv_event_t* e);
     void HandlePoke(lv_point_t pt);
     void Tick();
-    void Render();
+    void Render(float entrance = 1.0f, PetTnt::Stage tnt_stage = PetTnt::Stage::Idle,
+                float tnt_progress = 0.0f, const PetTotem::Pose* totem = nullptr,
+                PetTotem::Stage totem_stage = PetTotem::Stage::Idle, float totem_progress = 0.0f);
+    void StartTotem(int64_t now, bool aftermath);
+    bool IsReviveDrag(lv_point_t point) const;
     void SyncColors();
 
     lv_obj_t* canvas_ = nullptr;
@@ -48,9 +82,41 @@ private:
     int64_t press_start_ = 0;
     int64_t last_click_ = 0;
     lv_point_t press_pt_ = {0, 0};
+    lv_point_t press_origin_{};
+    bool tnt_tap_eligible_ = false;
+    bool totem_drag_ = false;
+    bool arm_candidate_ = false;
+    bool arm_armed_this_press_ = false;
+    bool totem_armed_ = false;
+    bool totem_after_tnt_ = false;
+    bool arm_handled_ = false;
+    PetTnt tnt_;
+    PetTntAudio tnt_audio_;
+    PetTotem totem_;
+    PetTotemAudio totem_audio_;
+#ifdef GROK_FIREWORKS
+    void UpdateFaceProfile(int64_t now);
+    void UpdateTotemPack(int64_t now);
+    void UpdateTntPack(int64_t now);
+    std::atomic<bool> face_reload_queued_{true};
+    int64_t next_face_load_ = 0;
+    std::shared_ptr<PetMedia::FaceRequest> face_request_;
+    std::shared_ptr<PetMedia::TntRequest> tnt_request_;
+    std::shared_ptr<const PetMedia::TntClip> tnt_clip_;
+    int64_t next_tnt_preload_ = 5000000;
+    std::unique_ptr<PetFireworks> fireworks_;
+    bool firework_drag_ = false;
+    bool firework_returning_ = false;
+    bool IsFireworkDrag(lv_point_t point) const;
+    std::shared_ptr<PetMedia::TotemPack> totem_pack_;
+    std::shared_ptr<PetMedia::TotemRequest> totem_request_;
+    int64_t next_totem_load_ = 0;
+    int totem_load_attempts_ = 0;
+#endif
     float spin_ = 0.0f;
     float spin_v_ = 0.0f;
 
+    PetFaceProfile profile_;
     uint32_t last_bg_ = 0xFFFFFFFF;
     uint16_t bg_ = 0xFFFF;
     uint16_t face_ = 0x1082;
@@ -64,6 +130,8 @@ private:
     float gx_ = 0.0f, gy_ = 0.0f, gvx_ = 0.0f, gvy_ = 0.0f;
     float squash_ = 0.0f, squash_v_ = 0.0f;
     float hop_ = 0.0f, hop_v_ = 0.0f;
+    // Eyes follow the face's vertical spring with a short clamp-limited lag.
+    float eye_hop_ = 0.0f, eye_hop_v_ = 0.0f;
     float eye_ = 1.0f, eye_v_ = 0.0f;
     float blink_ = 1.0f;
     int64_t blink_next_ = 0;
@@ -74,6 +142,11 @@ private:
 
     int64_t last_touch_ = 0;
     bool drowsy_ = false;
+#ifdef GROK_CONTROLS
+    std::unique_ptr<PetControls> controls_;
+    std::function<void()> wifi_setup_handler_;
+    bool discharging_ = false;
+#endif
     int battery_level_ = -1;
     bool charging_ = false;
     bool low_batt_ = false;
